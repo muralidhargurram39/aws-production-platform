@@ -8,6 +8,9 @@ override.tf
 override.tf.json
 *_override.tf
 *_override.tf.json
+*.tfplan
+tfplan
+outputs.txt
 
 # Keep the dependency lock file
 !.terraform.lock.hcl
