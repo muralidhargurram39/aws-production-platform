@@ -32,6 +32,11 @@ jobs:
           role-to-assume: arn:aws:iam::626311400372:role/aws-production-platform-dev-github-actions
           aws-region: ap-south-2
 
+      - name: Verify AWS Identity
+        run: |
+          aws --version
+          aws sts get-caller-identity
+
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v3
 
