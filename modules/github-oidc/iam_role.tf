@@ -35,7 +35,7 @@ data "aws_iam_policy_document" "github_assume_role" {
       variable = "token.actions.githubusercontent.com:sub"
 
       values = [
-        "repo:muralidhargurram39/aws-production-platform:ref:refs/heads/main"
+        "repo:muralidhargurram39/aws-production-platform:*"
       ]
     }
   }
