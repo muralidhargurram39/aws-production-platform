@@ -175,3 +175,14 @@ module "disaster_recovery" {
   source_bucket_name = module.logging.logs_bucket_name
   source_bucket_arn  = module.logging.logs_bucket_arn
 }
+
+module "github_oidc" {
+
+  source = "../../modules/github-oidc"
+
+  github_owner      = "muralidhargurram39"
+  github_repository = "aws-production-platform"
+
+  project_name = var.project_name
+  environment  = var.environment
+}

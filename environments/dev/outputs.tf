@@ -171,3 +171,7 @@ output "replica_bucket_name" {
 output "replica_bucket_arn" {
   value = module.disaster_recovery.replica_bucket_arn
 }
+
+output "github_actions_role_arn" {
+  value = module.github_oidc.github_actions_role_arn
+}
