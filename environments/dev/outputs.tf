@@ -139,3 +139,35 @@ output "waf_web_acl_arn" {
 output "waf_web_acl_id" {
   value = module.waf.web_acl_id
 }
+
+output "vpc_flow_log_id" {
+  value = module.network.vpc_flow_log_id
+}
+
+output "vpc_flow_log_log_group_name" {
+  value = module.network.vpc_flow_log_log_group_name
+}
+
+output "access_analyzer_arn" {
+  value = module.access_analyzer.analyzer_arn
+}
+
+output "access_analyzer_name" {
+  value = module.access_analyzer.analyzer_name
+}
+
+#output "guardduty_detector_id" {
+# value = module.guardduty.guardduty_detector_id
+#}
+
+#output "guardduty_detector_arn" {
+# value = module.guardduty.guardduty_detector_arn
+#}
+
+output "replica_bucket_name" {
+  value = module.disaster_recovery.replica_bucket_name
+}
+
+output "replica_bucket_arn" {
+  value = module.disaster_recovery.replica_bucket_arn
+}

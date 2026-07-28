@@ -8,6 +8,8 @@ module "network" {
   project_name = var.project_name
   environment  = var.environment
 
+  common_tags = local.common_tags
+
   vpc_cidr = var.vpc_cidr
 
   availability_zones = slice(
@@ -64,6 +66,7 @@ module "cloudfront" {
 
   web_acl_id = module.waf.web_acl_arn
 
+
   tags = local.common_tags
 }
 
@@ -72,6 +75,8 @@ module "compute" {
 
   project_name = var.project_name
   environment  = var.environment
+
+  ami_id = var.ami_id
 
   private_subnet_ids            = module.network.private_subnet_ids
   application_security_group_id = module.security.application_security_group_id
@@ -133,4 +138,40 @@ module "logging" {
   environment  = var.environment
 
   tags = local.common_tags
+}
+
+module "config" {
+  source = "../../modules/config"
+
+  project_name = var.project_name
+  environment  = var.environment
+}
+
+module "access_analyzer" {
+  source = "../../modules/access-analyzer"
+
+  project_name = var.project_name
+  environment  = var.environment
+}
+
+#module "guardduty" {
+# source = "../../modules/guardduty"
+
+#project_name = var.project_name
+#environment  = var.environment
+#}
+
+module "disaster_recovery" {
+  source = "../../modules/disaster-recovery"
+
+  providers = {
+    aws    = aws
+    aws.dr = aws.dr
+  }
+
+  project_name       = var.project_name
+  environment        = var.environment
+  account_id         = data.aws_caller_identity.current.account_id
+  source_bucket_name = module.logging.logs_bucket_name
+  source_bucket_arn  = module.logging.logs_bucket_arn
 }

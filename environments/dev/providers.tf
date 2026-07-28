@@ -22,3 +22,8 @@ provider "aws" {
     }
   }
 }
+
+provider "aws" {
+  alias  = "dr"
+  region = "ap-south-1"
+}

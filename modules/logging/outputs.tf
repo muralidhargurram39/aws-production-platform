@@ -12,3 +12,14 @@ output "bucket_domain_name" {
   description = "Logging bucket domain name"
   value       = aws_s3_bucket.logs.bucket_domain_name
 }
+
+output "logs_bucket_arn" {
+  description = "ARN of the logging bucket"
+  value       = aws_s3_bucket.logs.arn
+}
+
+output "logs_bucket_name" {
+  description = "Name of the logging bucket"
+  value       = aws_s3_bucket.logs.bucket
+}
+

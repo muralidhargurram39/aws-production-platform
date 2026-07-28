@@ -13,6 +13,10 @@ variable "environment" {
   }
 }
 
+variable "common_tags" {
+  type = map(string)
+}
+
 variable "vpc_cidr" {
   description = "CIDR block for the VPC"
   type        = string
@@ -43,3 +47,5 @@ variable "enable_nat_gateway" {
   type        = bool
   default     = true
 }
+
+

@@ -13,6 +13,12 @@ variable "environment" {
   default = "dev"
 }
 
+variable "ami_id" {
+  description = "Optional AMI ID override for EC2 instances."
+  type        = string
+  default     = null
+}
+
 variable "vpc_cidr" {
   description = "CIDR block for the VPC"
   type        = string

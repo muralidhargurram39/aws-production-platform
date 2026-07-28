@@ -1,7 +1,10 @@
 resource "aws_launch_template" "application" {
   name_prefix = "${local.name_prefix}-lt-"
 
-  image_id      = data.aws_ami.amazon_linux.id
+  image_id = coalesce(
+    var.ami_id,
+    data.aws_ami.amazon_linux.id
+  )
   instance_type = var.instance_type
   user_data     = base64encode(file("${path.module}/user_data.sh"))
 
@@ -45,23 +48,23 @@ resource "aws_launch_template" "application" {
     tags = merge(
       local.common_tags,
       {
-        Name = "${local.name_prefix}-application"
+        Name   = "${local.name_prefix}-application"
         Backup = "true"
-        
+
       }
     )
   }
 
   tag_specifications {
-  resource_type = "volume"
+    resource_type = "volume"
 
-  tags = merge(
-    local.common_tags,
-    {
-      Backup = "true"
-    }
-  )
-}
+    tags = merge(
+      local.common_tags,
+      {
+        Backup = "true"
+      }
+    )
+  }
 
   tags = merge(
     local.common_tags,

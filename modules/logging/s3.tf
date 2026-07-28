@@ -1,7 +1,7 @@
 resource "aws_s3_bucket" "logs" {
 
   bucket = "${local.name_prefix}-${data.aws_caller_identity.current.account_id}-logs"
-  
+
   force_destroy = true
 
   tags = local.common_tags

@@ -63,5 +63,6 @@ resource "aws_cloudfront_distribution" "main" {
 
   price_class = "PriceClass_100"
 
+
   tags = local.common_tags
 }

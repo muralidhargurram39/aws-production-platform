@@ -12,11 +12,11 @@ resource "aws_cloudwatch_dashboard" "main" {
         height = 6
 
         properties = {
-          title   = "EC2 CPU Utilization"
-          region  = "ap-south-2"
-          stat    = "Average"
-          period  = 300
-          view    = "timeSeries"
+          title  = "EC2 CPU Utilization"
+          region = "ap-south-2"
+          stat   = "Average"
+          period = 300
+          view   = "timeSeries"
 
           metrics = [
             [
@@ -37,11 +37,11 @@ resource "aws_cloudwatch_dashboard" "main" {
         height = 6
 
         properties = {
-          title   = "Healthy Targets"
-          region  = "ap-south-2"
-          stat    = "Minimum"
-          period  = 60
-          view    = "timeSeries"
+          title  = "Healthy Targets"
+          region = "ap-south-2"
+          stat   = "Minimum"
+          period = 60
+          view   = "timeSeries"
 
           metrics = [
             [
@@ -64,11 +64,11 @@ resource "aws_cloudwatch_dashboard" "main" {
         height = 6
 
         properties = {
-          title   = "ALB Request Count"
-          region  = "ap-south-2"
-          stat    = "Sum"
-          period  = 300
-          view    = "timeSeries"
+          title  = "ALB Request Count"
+          region = "ap-south-2"
+          stat   = "Sum"
+          period = 300
+          view   = "timeSeries"
 
           metrics = [
             [
@@ -89,11 +89,11 @@ resource "aws_cloudwatch_dashboard" "main" {
         height = 6
 
         properties = {
-          title   = "ALB 5XX Errors"
-          region  = "ap-south-2"
-          stat    = "Sum"
-          period  = 300
-          view    = "timeSeries"
+          title  = "ALB 5XX Errors"
+          region = "ap-south-2"
+          stat   = "Sum"
+          period = 300
+          view   = "timeSeries"
 
           metrics = [
             [

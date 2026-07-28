@@ -22,14 +22,14 @@ resource "aws_lb" "application" {
   enable_http2 = true
 
   dynamic "access_logs" {
-  for_each = var.access_logs_enabled ? [1] : []
+    for_each = var.access_logs_enabled ? [1] : []
 
-  content {
-    enabled = true
-    bucket  = var.access_logs_bucket
-    prefix  = var.access_logs_prefix
+    content {
+      enabled = true
+      bucket  = var.access_logs_bucket
+      prefix  = var.access_logs_prefix
+    }
   }
-}
 
   tags = merge(
     local.common_tags,

@@ -23,3 +23,5 @@ database_subnet_cidrs = [
 ]
 
 enable_nat_gateway = true
+
+ami_id = "ami-047545a72673a1962"

@@ -54,3 +54,9 @@ variable "target_group_arns" {
   type        = list(string)
   default     = []
 }
+
+variable "ami_id" {
+  description = "Optional AMI ID. If null, the latest Amazon Linux 2023 AMI is used."
+  type        = string
+  default     = null
+}
