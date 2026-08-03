@@ -30,12 +30,12 @@ data "aws_iam_policy_document" "github_assume_role" {
 
     condition {
 
-      test = "StringEquals"
+      test = "StringLike"
 
       variable = "token.actions.githubusercontent.com:sub"
 
       values = [
-        "repo:muralidhargurram39/aws-production-platform:*"
+        "repo:${var.github_owner}/${var.github_repository}:*"
       ]
     }
   }
