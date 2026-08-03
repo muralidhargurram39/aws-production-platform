@@ -27,7 +27,7 @@ resource "aws_cloudfront_distribution" "main" {
   default_cache_behavior {
 
     target_origin_id       = "alb-origin"
-    viewer_protocol_policy = "allow-all"
+    viewer_protocol_policy = "redirect-to-https"
 
     allowed_methods = [
       "GET",
