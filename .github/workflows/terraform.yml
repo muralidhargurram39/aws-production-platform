@@ -73,6 +73,13 @@ jobs:
       - name: Run TFLint
         run: tflint --recursive
 
+      - name: Run Checkov
+        uses: bridgecrewio/checkov-action@v12
+
+        with:
+          directory: .
+          framework: terraform
+
       - name: Terraform Init
         run: terraform init
 
