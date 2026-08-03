@@ -23,6 +23,7 @@ resource "aws_s3_bucket_server_side_encryption_configuration" "logs" {
   rule {
 
     apply_server_side_encryption_by_default {
+
       sse_algorithm = "AES256"
     }
 
@@ -58,6 +59,10 @@ resource "aws_s3_bucket_lifecycle_configuration" "logs" {
     status = "Enabled"
 
     filter {}
+
+    abort_incomplete_multipart_upload {
+      days_after_initiation = 7
+    }
 
     transition {
 
