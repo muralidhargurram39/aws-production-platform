@@ -43,12 +43,6 @@ variable "root_volume_size" {
   default = 20
 }
 
-variable "user_data" {
-  description = "User data script for EC2 instances"
-  type        = string
-  default     = ""
-}
-
 variable "target_group_arns" {
   description = "Target Groups for the Auto Scaling Group"
   type        = list(string)
