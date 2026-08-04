@@ -41,6 +41,14 @@ data "aws_iam_policy_document" "backend" {
       "dynamodb:UpdateContinuousBackups"
     ]
 
-    resources = ["*"]
+    resources = [
+
+      "arn:aws:s3:::${var.backend_bucket_name}",
+
+      "arn:aws:s3:::${var.backend_bucket_name}/*",
+
+      "arn:aws:dynamodb:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:table/${var.backend_lock_table_name}"
+
+    ]
   }
 }

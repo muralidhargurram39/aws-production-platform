@@ -19,13 +19,19 @@ resource "aws_s3_bucket_versioning" "logs_replica" {
 }
 
 resource "aws_s3_bucket_server_side_encryption_configuration" "logs_replica" {
+
   provider = aws.dr
 
   bucket = aws_s3_bucket.logs_replica.id
 
   rule {
+
+    bucket_key_enabled = true
+
     apply_server_side_encryption_by_default {
-      sse_algorithm = "AES256"
+
+      kms_master_key_id = var.kms_key_arn
+      sse_algorithm     = "aws:kms"
     }
   }
 }

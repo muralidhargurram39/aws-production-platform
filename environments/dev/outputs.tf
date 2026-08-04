@@ -175,3 +175,33 @@ output "replica_bucket_arn" {
 output "github_actions_role_arn" {
   value = module.github_oidc.github_actions_role_arn
 }
+
+output "route53_zone_id" {
+  description = "Route53 Hosted Zone ID"
+  value       = module.route53.zone_id
+}
+
+output "route53_name_servers" {
+  description = "Route53 Name Servers"
+  value       = module.route53.name_servers
+}
+
+output "acm_certificate_arn" {
+  description = "CloudFront ACM Certificate ARN"
+  value       = module.acm.certificate_arn
+}
+
+output "acm_certificate_status" {
+  description = "CloudFront ACM Certificate Status"
+  value       = module.acm.certificate_status
+}
+
+output "acm_domain_validation_options" {
+  description = "ACM DNS Validation Records"
+  value       = module.acm.domain_validation_options
+}
+
+output "acm_certificate_domain" {
+  description = "Primary ACM certificate domain"
+  value       = module.acm.certificate_domain_name
+}

@@ -19,10 +19,22 @@ resource "aws_s3_bucket_replication_configuration" "logs" {
       status = "Enabled"
     }
 
+    source_selection_criteria {
+
+      sse_kms_encrypted_objects {
+        status = "Enabled"
+      }
+
+    }
+
     destination {
 
       bucket        = aws_s3_bucket.logs_replica.arn
       storage_class = "STANDARD"
+
+      encryption_configuration {
+        replica_kms_key_id = var.kms_key_arn
+      }
     }
   }
 }

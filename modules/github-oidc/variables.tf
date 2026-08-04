@@ -15,3 +15,13 @@ variable "project_name" {
 variable "environment" {
   type = string
 }
+
+variable "backend_bucket_name" {
+  description = "Terraform backend S3 bucket"
+  type        = string
+}
+
+variable "backend_lock_table_name" {
+  description = "Terraform backend DynamoDB table"
+  type        = string
+}

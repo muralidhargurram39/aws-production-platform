@@ -17,7 +17,10 @@ data "aws_iam_policy_document" "terraform_backend_kms" {
     }
 
     actions = [
-      "kms:*"
+      "kms:Encrypt",
+      "kms:Decrypt",
+      "kms:GenerateDataKey",
+      "kms:DescribeKey"
     ]
 
     resources = [

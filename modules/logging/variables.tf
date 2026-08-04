@@ -13,3 +13,21 @@ variable "tags" {
   type        = map(string)
   default     = {}
 }
+
+variable "kms_key_arn" {
+  description = "KMS key ARN for bucket encryption"
+  type        = string
+}
+
+variable "enable_cloudtrail_policy" {
+
+  description = "Attach CloudTrail bucket policy"
+
+  type    = bool
+  default = false
+}
+
+variable "aws_region" {
+  description = "AWS region"
+  type        = string
+}

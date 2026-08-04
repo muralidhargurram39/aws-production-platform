@@ -22,3 +22,25 @@ variable "tags" {
   default = {}
 }
 
+variable "logging_bucket" {
+  description = "CloudFront logging bucket domain name"
+  type        = string
+}
+
+variable "logging_prefix" {
+  description = "CloudFront log prefix"
+  type        = string
+  default     = "cloudfront/"
+}
+
+variable "aliases" {
+  description = "Alternate domain names (CNAMEs)"
+  type        = list(string)
+  default     = []
+}
+
+variable "acm_certificate_arn" {
+  description = "ACM certificate ARN for CloudFront"
+  type        = string
+  default     = null
+}
