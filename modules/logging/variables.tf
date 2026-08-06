@@ -31,3 +31,9 @@ variable "aws_region" {
   description = "AWS region"
   type        = string
 }
+
+variable "force_destroy" {
+  description = "Force delete non-empty bucket"
+  type        = bool
+  default     = false
+}

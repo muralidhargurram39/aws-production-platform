@@ -6,6 +6,7 @@ resource "aws_s3_bucket" "logs_replica" {
   tags = {
     Name = "${var.project_name}-${var.environment}-logs-dr"
   }
+  force_destroy = var.force_destroy
 }
 
 resource "aws_s3_bucket_versioning" "logs_replica" {

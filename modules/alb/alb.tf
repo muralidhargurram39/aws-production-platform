@@ -11,7 +11,7 @@ resource "aws_lb" "application" {
 
   subnets = var.public_subnet_ids
 
-  enable_deletion_protection = true
+  enable_deletion_protection = var.enable_deletion_protection
 
   enable_cross_zone_load_balancing = true
 

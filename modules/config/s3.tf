@@ -1,5 +1,6 @@
 resource "aws_s3_bucket" "config" {
-  bucket = "${var.project_name}-${var.environment}-${data.aws_caller_identity.current.account_id}-config"
+  bucket        = "${var.project_name}-${var.environment}-${data.aws_caller_identity.current.account_id}-config"
+  force_destroy = var.force_destroy
 }
 
 resource "aws_s3_bucket_versioning" "config" {

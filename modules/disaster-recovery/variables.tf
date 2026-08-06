@@ -27,3 +27,9 @@ variable "source_kms_key_arn" {
   type        = string
 }
 
+variable "force_destroy" {
+  description = "Force delete non-empty bucket"
+  type        = bool
+  default     = false
+}
+

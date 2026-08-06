@@ -2,7 +2,7 @@ resource "aws_s3_bucket" "logs" {
 
   bucket = "${local.name_prefix}-${data.aws_caller_identity.current.account_id}-logs"
 
-  force_destroy = true
+  force_destroy = var.force_destroy
 
   tags = local.common_tags
 }
@@ -24,11 +24,11 @@ resource "aws_s3_bucket_server_side_encryption_configuration" "logs" {
 
     apply_server_side_encryption_by_default {
 
-      sse_algorithm     = "aws:kms"
-      kms_master_key_id = var.kms_key_arn
+      sse_algorithm = "AES256"
+      #kms_master_key_id = var.kms_key_arn
     }
 
-    bucket_key_enabled = true
+    #bucket_key_enabled = true
   }
 }
 

@@ -48,6 +48,8 @@ module "alb" {
   project_name = var.project_name
   environment  = var.environment
 
+  enable_deletion_protection = false
+
   vpc_id            = module.network.vpc_id
   public_subnet_ids = module.network.public_subnet_ids
 
@@ -56,11 +58,14 @@ module "alb" {
   access_logs_enabled = true
   access_logs_bucket  = module.logging.bucket_name
 
-  enable_https = true
-
+  enable_https    = true
   certificate_arn = module.acm_regional.certificate_arn
 
   tags = local.common_tags
+
+  depends_on = [
+    module.logging
+  ]
 }
 
 module "cloudfront" {
@@ -129,8 +134,9 @@ module "monitoring" {
 module "backup" {
   source = "../../modules/backup"
 
-  project_name = var.project_name
-  environment  = var.environment
+  project_name  = var.project_name
+  environment   = var.environment
+  force_destroy = var.force_destroy
 }
 
 module "waf" {
@@ -161,13 +167,15 @@ module "logging" {
   tags                     = local.common_tags
   kms_key_arn              = module.kms.key_arn
   enable_cloudtrail_policy = true
+  force_destroy            = true
 }
 
 module "config" {
   source = "../../modules/config"
 
-  project_name = var.project_name
-  environment  = var.environment
+  project_name  = var.project_name
+  environment   = var.environment
+  force_destroy = true
 }
 
 module "access_analyzer" {
@@ -191,6 +199,7 @@ module "disaster_recovery" {
     aws    = aws
     aws.dr = aws.dr
   }
+  force_destroy = true
 
   source_kms_key_arn = module.kms.key_arn
 
