@@ -22,6 +22,14 @@ jobs:
 
       - name: Checkout Repository
         uses: actions/checkout@v4
+      
+      - name: Debug GitHub Context
+        run: |
+          echo "Repository : ${{ github.repository }}"
+          echo "Ref        : ${{ github.ref }}"
+          echo "Event      : ${{ github.event_name }}"
+          echo "Actor      : ${{ github.actor }}"
+          echo "Repository Owner : ${{ github.repository_owner }}"
 
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v4
@@ -65,4 +73,3 @@ jobs:
         with:
           name: terraform-plan
           path: environments/dev/tfplan
-
