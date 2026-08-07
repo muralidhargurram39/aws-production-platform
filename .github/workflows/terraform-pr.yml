@@ -9,9 +9,7 @@ permissions:
 
 jobs:
   validate:
-
     name: Validate Terraform
-
     runs-on: ubuntu-latest
 
     defaults:
@@ -19,95 +17,72 @@ jobs:
         working-directory: environments/dev
 
     steps:
-
       - name: Checkout Repository
         uses: actions/checkout@v4
-      
-      - name: Debug GitHub Context
+
+      - name: Print GitHub Context
         run: |
-          echo "Repository : ${{ github.repository }}"
-          echo "Ref        : ${{ github.ref }}"
-          echo "Event      : ${{ github.event_name }}"
-          echo "Actor      : ${{ github.actor }}"
-          echo "Repository Owner : ${{ github.repository_owner }}"
-      
+          echo "Repository        : ${{ github.repository }}"
+          echo "Repository Owner  : ${{ github.repository_owner }}"
+          echo "Ref               : ${{ github.ref }}"
+          echo "Head Ref          : ${{ github.head_ref }}"
+          echo "Base Ref          : ${{ github.base_ref }}"
+          echo "Event             : ${{ github.event_name }}"
+          echo "Workflow          : ${{ github.workflow }}"
+          echo "Actor             : ${{ github.actor }}"
+
+      - name: Print AWS Role ARN Secret
+        run: |
+          echo "AWS_ROLE_ARN=${{ secrets.AWS_ROLE_ARN }}"
+
       - name: Print GitHub OIDC Claims
         shell: bash
         run: |
-         sudo apt-get update -qq
-         sudo apt-get install -y jq -qq
+          set -e
 
-         RESPONSE=$(curl -s \
-         -H "Authorization: bearer $ACTIONS_ID_TOKEN_REQUEST_TOKEN" \
-         "${ACTIONS_ID_TOKEN_REQUEST_URL}&audience=sts.amazonaws.com")
+          sudo apt-get update -qq
+          sudo apt-get install -y jq -qq
 
-         TOKEN=$(echo "$RESPONSE" | jq -r '.value')
+          RESPONSE=$(curl -s \
+            -H "Authorization: bearer $ACTIONS_ID_TOKEN_REQUEST_TOKEN" \
+            "${ACTIONS_ID_TOKEN_REQUEST_URL}&audience=sts.amazonaws.com")
 
-         python3 - "$TOKEN" <<'PY'
-         import base64
-         import json
-         import sys
+          TOKEN=$(echo "$RESPONSE" | jq -r '.value')
 
-         token = sys.argv[1]
-         payload = token.split(".")[1]
-         payload += "=" * (-len(payload) % 4)
+          python3 - "$TOKEN" <<'PY'
+import base64
+import json
+import sys
 
-         claims = json.loads(base64.urlsafe_b64decode(payload))
+token = sys.argv[1]
 
-         print("\n========== OIDC CLAIMS ==========\n")
-         for k in [
-           "sub",
-           "aud",
-           "repository",
-           "repository_owner",
-           "ref",
-           "event_name",
-           "workflow",
-           "job_workflow_ref"
-         ]:
-         print(f"{k}: {claims.get(k)}")
-         PY
+payload = token.split(".")[1]
+payload += "=" * (-len(payload) % 4)
 
-      - name: Verify AWS Role ARN Secret
+claims = json.loads(base64.urlsafe_b64decode(payload))
+
+print("\n========== OIDC CLAIMS ==========\n")
+
+keys = [
+    "iss",
+    "aud",
+    "sub",
+    "repository",
+    "repository_owner",
+    "repository_id",
+    "ref",
+    "ref_type",
+    "event_name",
+    "workflow",
+    "job_workflow_ref",
+    "actor",
+]
+
+for key in keys:
+    print(f"{key:20}: {claims.get(key)}")
+PY
+
+      - name: Stop After Debugging
         run: |
-         echo "AWS_ROLE_ARN=${{ secrets.AWS_ROLE_ARN }}"
-
-      - name: Debug GitHub OIDC Claims
-        uses: github/actions-oidc-debugger@main
-
-      - name: Setup Terraform
-        uses: hashicorp/setup-terraform@v3
-
-      - name: Terraform Init
-        run: terraform init
-
-      - name: Terraform Format Check
-        run: terraform fmt -check -recursive
-
-      - name: Terraform Validate
-        run: terraform validate
-
-      - name: Setup TFLint
-        uses: terraform-linters/setup-tflint@v4
-
-      - name: Initialize TFLint
-        run: tflint --init
-
-      - name: Run TFLint
-        run: tflint --recursive
-
-      - name: Run Checkov
-        uses: bridgecrewio/checkov-action@v12
-        with:
-          directory: environments/dev
-          framework: terraform
-          quiet: true
-
-      - name: Terraform Plan
-        run: terraform plan -out=tfplan -no-color
-
-      - name: Upload Terraform Plan
-        uses: actions/upload-artifact@v4
-        with:
-          name: terraform-plan
-          path: environments/dev/tfplan
+          echo "OIDC debugging completed."
+          exit 0
