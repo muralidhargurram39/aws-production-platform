@@ -50,37 +50,36 @@ jobs:
           TOKEN=$(echo "$RESPONSE" | jq -r '.value')
 
           python3 - "$TOKEN" <<'PY'
-import base64
-import json
-import sys
+           import base64
+           import json
+           import sys
 
-token = sys.argv[1]
+           token = sys.argv[1]
 
-payload = token.split(".")[1]
-payload += "=" * (-len(payload) % 4)
+           payload = token.split(".")[1]
+           payload += "=" * (-len(payload) % 4)
 
-claims = json.loads(base64.urlsafe_b64decode(payload))
+           claims = json.loads(base64.urlsafe_b64decode(payload))
 
-print("\n========== OIDC CLAIMS ==========\n")
+           print("\n========== OIDC CLAIMS ==========\n")
 
-keys = [
-    "iss",
-    "aud",
-    "sub",
-    "repository",
-    "repository_owner",
-    "repository_id",
-    "ref",
-    "ref_type",
-    "event_name",
-    "workflow",
-    "job_workflow_ref",
-    "actor",
-]
+           keys = [
+             "iss",
+             "aud",
+             "sub",
+             "repository",
+             "repository_owner",
+             "repository_id",
+             "ref",
+             "ref_type",
+             "event_name",
+             "job_workflow_ref",
+             "actor",
+           ]
 
-for key in keys:
-    print(f"{key:20}: {claims.get(key)}")
-PY
+           for key in keys:
+             print(f"{key:20}: {claims.get(key)}")
+          PY
 
       - name: Stop After Debugging
         run: |
