@@ -1,5 +1,5 @@
 ---
-name: GitHub OIDC Debug
+name: OIDC Claims Debug
 
 on:
   workflow_dispatch:
@@ -15,16 +15,38 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Print OIDC Token Claims
-        uses: actions/github-script@v7
-        with:
-          script: |
-            const core = require('@actions/core');
+      - name: Print GitHub Context
+        run: |
+          echo "Repository : ${{ github.repository }}"
+          echo "Ref        : ${{ github.ref }}"
+          echo "Actor      : ${{ github.actor }}"
+          echo "Event      : ${{ github.event_name }}"
 
-            const token = await core.getIDToken('sts.amazonaws.com');
+      - name: Install jq
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y jq
 
-            const payload = JSON.parse(
-              Buffer.from(token.split('.')[1], 'base64url').toString()
-            );
+      - name: Get OIDC Token
+        env:
+          ACTIONS_ID_TOKEN_REQUEST_TOKEN: ${{ env.ACTIONS_ID_TOKEN_REQUEST_TOKEN }}
+          ACTIONS_ID_TOKEN_REQUEST_URL: ${{ env.ACTIONS_ID_TOKEN_REQUEST_URL }}
+        run: |
+          RESPONSE=$(curl -s \
+            -H "Authorization: bearer $ACTIONS_ID_TOKEN_REQUEST_TOKEN" \
+            "${ACTIONS_ID_TOKEN_REQUEST_URL}&audience=sts.amazonaws.com")
 
-            console.log(JSON.stringify(payload, null, 2));
+          TOKEN=$(echo "$RESPONSE" | jq -r '.value')
+
+          echo "========== JWT CLAIMS =========="
+
+          python3 -c "
+            import base64
+            import json
+
+            token='$TOKEN'
+            payload=token.split('.')[1]
+            payload += '=' * (-len(payload) % 4)
+            claims=json.loads(base64.urlsafe_b64decode(payload))
+             print(json.dumps(claims, indent=2))
+            " 
