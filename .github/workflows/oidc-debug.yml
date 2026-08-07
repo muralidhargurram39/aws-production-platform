@@ -1,52 +1,26 @@
----
-name: OIDC Claims Debug
+- name: Get OIDC Token and Print Claims
+  shell: bash
+  env:
+    ACTIONS_ID_TOKEN_REQUEST_TOKEN: ${{ env.ACTIONS_ID_TOKEN_REQUEST_TOKEN }}
+    ACTIONS_ID_TOKEN_REQUEST_URL: ${{ env.ACTIONS_ID_TOKEN_REQUEST_URL }}
+  run: |
+    set -euo pipefail
 
-on:
-  workflow_dispatch:
+    RESPONSE=$(curl -s \
+      -H "Authorization: bearer $ACTIONS_ID_TOKEN_REQUEST_TOKEN" \
+      "${ACTIONS_ID_TOKEN_REQUEST_URL}&audience=sts.amazonaws.com")
 
-permissions:
-  id-token: write
-  contents: read
+    TOKEN=$(echo "$RESPONSE" | jq -r '.value')
 
-jobs:
-  debug:
-    runs-on: ubuntu-latest
+    PAYLOAD=$(echo "$TOKEN" | cut -d '.' -f2)
 
-    steps:
-      - uses: actions/checkout@v4
+    # Convert Base64URL -> Base64
+    PAYLOAD=$(echo "$PAYLOAD" | tr '_-' '/+')
 
-      - name: Print GitHub Context
-        run: |
-          echo "Repository : ${{ github.repository }}"
-          echo "Ref        : ${{ github.ref }}"
-          echo "Actor      : ${{ github.actor }}"
-          echo "Event      : ${{ github.event_name }}"
+    # Pad to multiple of 4
+    while [ $(( ${#PAYLOAD} % 4 )) -ne 0 ]; do
+      PAYLOAD="${PAYLOAD}="
+    done
 
-      - name: Install jq
-        run: |
-          sudo apt-get update -qq
-          sudo apt-get install -y jq
-
-      - name: Get OIDC Token
-        env:
-          ACTIONS_ID_TOKEN_REQUEST_TOKEN: ${{ env.ACTIONS_ID_TOKEN_REQUEST_TOKEN }}
-          ACTIONS_ID_TOKEN_REQUEST_URL: ${{ env.ACTIONS_ID_TOKEN_REQUEST_URL }}
-        run: |
-          RESPONSE=$(curl -s \
-            -H "Authorization: bearer $ACTIONS_ID_TOKEN_REQUEST_TOKEN" \
-            "${ACTIONS_ID_TOKEN_REQUEST_URL}&audience=sts.amazonaws.com")
-
-          TOKEN=$(echo "$RESPONSE" | jq -r '.value')
-
-          echo "========== JWT CLAIMS =========="
-
-          python3 -c "
-            import base64
-            import json
-
-            token='$TOKEN'
-            payload=token.split('.')[1]
-            payload += '=' * (-len(payload) % 4)
-            claims=json.loads(base64.urlsafe_b64decode(payload))
-             print(json.dumps(claims, indent=2))
-            " 
+    echo "========== JWT CLAIMS =========="
+    echo "$PAYLOAD" | base64 -d | jq .
