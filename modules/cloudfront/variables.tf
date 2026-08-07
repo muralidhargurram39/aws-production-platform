@@ -1,3 +1,4 @@
+# tflint-ignore: terraform_unused_declarations
 variable "project_name" {
   type = string
 }
@@ -22,17 +23,6 @@ variable "tags" {
   default = {}
 }
 
-variable "logging_bucket" {
-  description = "CloudFront logging bucket domain name"
-  type        = string
-}
-
-variable "logging_prefix" {
-  description = "CloudFront log prefix"
-  type        = string
-  default     = "cloudfront/"
-}
-
 variable "aliases" {
   description = "Alternate domain names (CNAMEs)"
   type        = list(string)
@@ -43,4 +33,14 @@ variable "acm_certificate_arn" {
   description = "ACM certificate ARN for CloudFront"
   type        = string
   default     = null
+}
+
+variable "logging_bucket" {
+  type        = string
+  description = "CloudFront logging bucket"
+}
+
+variable "logging_prefix" {
+  type        = string
+  description = "CloudFront logging prefix"
 }

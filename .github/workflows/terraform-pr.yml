@@ -1,20 +1,67 @@
-steps:
-  - name: Checkout Repository
-    uses: actions/checkout@v4
+---
+name: Terraform PR Validation
 
-  - name: Configure AWS Credentials
-    uses: aws-actions/configure-aws-credentials@v5
-    with:
-      role-to-assume: arn:aws:iam::626311400372:role/aws-production-platform-dev-github-actions
-      aws-region: ap-south-2
+on:
+  pull_request:
+    branches:
+      - main
 
-  - name: Setup Terraform
-    uses: hashicorp/setup-terraform@v3
+permissions:
+  id-token: write
+  contents: read
 
-  - name: Terraform Init
-    run: terraform init
+jobs:
+  validate:
+    name: Validate Terraform
+    runs-on: ubuntu-latest
 
-  - name: Terraform Validate
-    run: terraform validate
+    defaults:
+      run:
+        working-directory: environments/dev
 
-  ...
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v5
+        with:
+          role-to-assume: ${{ vars.AWS_ROLE_ARN }}
+          aws-region: ap-south-2
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v3
+
+      - name: Terraform Init
+        run: terraform init
+
+      - name: Terraform Format Check
+        run: terraform fmt -check -recursive
+
+      - name: Terraform Validate
+        run: terraform validate
+
+      - name: Setup TFLint
+        uses: terraform-linters/setup-tflint@v4
+
+      - name: Initialize TFLint
+        run: tflint --init
+
+      - name: Run TFLint
+        run: tflint --recursive
+
+      - name: Run Checkov
+        uses: bridgecrewio/checkov-action@v12
+        with:
+          directory: environments/dev
+          framework: terraform
+          quiet: true
+
+      - name: Terraform Plan
+        run: terraform plan -out=tfplan -no-color
+
+      - name: Upload Terraform Plan
+        uses: actions/upload-artifact@v4
+        with:
+          name: terraform-plan
+          path: environments/dev/tfplan
