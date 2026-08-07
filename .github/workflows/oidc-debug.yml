@@ -10,6 +10,7 @@ permissions:
 
 jobs:
   debug:
+    name: GitHub OIDC Debug
     runs-on: ubuntu-latest
 
     steps:
