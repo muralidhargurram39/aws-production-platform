@@ -1,0 +1,62 @@
+---
+name: GitHub OIDC Debug
+
+on:
+  workflow_dispatch:
+
+permissions:
+  id-token: write
+  contents: read
+
+jobs:
+  debug:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Print GitHub Context
+        run: |
+          echo "Repository       : ${{ github.repository }}"
+          echo "Repository Owner : ${{ github.repository_owner }}"
+          echo "Ref              : ${{ github.ref }}"
+          echo "Head Ref         : ${{ github.head_ref }}"
+          echo "Base Ref         : ${{ github.base_ref }}"
+          echo "Event            : ${{ github.event_name }}"
+          echo "Workflow         : ${{ github.workflow }}"
+          echo "Actor            : ${{ github.actor }}"
+
+      - name: Print AWS Role ARN
+        run: |
+          echo "AWS_ROLE_ARN=${{ secrets.AWS_ROLE_ARN }}"
+
+      - name: Request GitHub OIDC Token
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const core = require('@actions/core');
+
+            try {
+              const token = await core.getIDToken('sts.amazonaws.com');
+
+              const payload = JSON.parse(
+                Buffer.from(token.split('.')[1], 'base64url').toString()
+              );
+
+              console.log("========== OIDC CLAIMS ==========");
+              console.log(JSON.stringify(payload, null, 2));
+
+            } catch (err) {
+              core.setFailed(err.message);
+            }
+
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v5
+        with:
+          role-to-assume: ${{ secrets.AWS_ROLE_ARN }}
+          aws-region: ap-south-2
+
+      - name: Verify AWS Identity
+        run: |
+          aws sts get-caller-identity
