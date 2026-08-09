@@ -4,8 +4,7 @@ data "aws_iam_policy_document" "terraform_backend_kms" {
 
   statement {
 
-    sid = "EnableRootPermissions"
-
+    sid    = "EnableRootPermissions"
     effect = "Allow"
 
     principals {
@@ -17,10 +16,7 @@ data "aws_iam_policy_document" "terraform_backend_kms" {
     }
 
     actions = [
-      "kms:Encrypt",
-      "kms:Decrypt",
-      "kms:GenerateDataKey",
-      "kms:DescribeKey"
+      "kms:*"
     ]
 
     resources = [

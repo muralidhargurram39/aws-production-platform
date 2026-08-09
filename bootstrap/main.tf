@@ -65,3 +65,14 @@ resource "aws_dynamodb_table" "terraform_lock" {
   }
 }
 
+module "github_oidc" {
+  source = "../modules/github-oidc"
+
+  github_owner      = "muralidhargurram39"
+  github_repository = "aws-production-platform"
+
+  project_name            = var.project_name
+  environment             = "dev"
+  backend_bucket_name     = var.state_bucket_name
+  backend_lock_table_name = var.lock_table_name
+}

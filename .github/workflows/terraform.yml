@@ -1,7 +1,7 @@
 ---
 name: Terraform Deployment
 
-on:
+"on":
   push:
     branches:
       - main
@@ -11,7 +11,6 @@ permissions:
   contents: read
 
 jobs:
-
   validate:
     name: Validate Infrastructure
     runs-on: ubuntu-latest
@@ -21,15 +20,17 @@ jobs:
         working-directory: environments/dev
 
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout Repository
+        uses: actions/checkout@v4
 
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v5
         with:
-          role-to-assume: arn:aws:iam::626311400372:role/aws-production-platform-dev-github-actions
+          role-to-assume: ${{ vars.AWS_ROLE_ARN }}
           aws-region: ap-south-2
 
-      - uses: hashicorp/setup-terraform@v3
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v3
 
       - name: Terraform Init
         run: terraform init
@@ -76,7 +77,8 @@ jobs:
         working-directory: environments/dev
 
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout Repository
+        uses: actions/checkout@v4
 
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v5
@@ -84,7 +86,8 @@ jobs:
           role-to-assume: ${{ vars.AWS_ROLE_ARN }}
           aws-region: ap-south-2
 
-      - uses: hashicorp/setup-terraform@v3
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v3
 
       - name: Terraform Init
         run: terraform init
