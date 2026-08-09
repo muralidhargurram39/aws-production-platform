@@ -188,8 +188,6 @@ module "access_analyzer" {
 #module "guardduty" {
 # source = "../../modules/guardduty"
 
-#project_name = var.project_name
-#environment  = var.environment
 #}
 
 module "disaster_recovery" {
@@ -327,8 +325,6 @@ module "ssm" {
 
   source = "../../modules/ssm"
 
-  project_name = var.project_name
-  environment  = var.environment
 
   ec2_role_name = module.iam.ec2_role_name
 }
