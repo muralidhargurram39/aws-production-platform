@@ -76,6 +76,7 @@ module "github_oidc" {
   environment             = "dev"
   backend_bucket_name     = var.state_bucket_name
   backend_lock_table_name = var.lock_table_name
+  backend_kms_key_arn     = aws_kms_key.terraform_backend.arn
 }
 
 resource "aws_s3_bucket_logging" "terraform_state" {

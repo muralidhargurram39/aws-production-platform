@@ -51,4 +51,19 @@ data "aws_iam_policy_document" "backend" {
 
     ]
   }
+  statement {
+    sid    = "TerraformBackendKMS"
+    effect = "Allow"
+
+    actions = [
+      "kms:Decrypt",
+      "kms:Encrypt",
+      "kms:GenerateDataKey",
+      "kms:DescribeKey",
+    ]
+
+    resources = [
+      var.backend_kms_key_arn
+    ]
+  }
 }
