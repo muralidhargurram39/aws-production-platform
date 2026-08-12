@@ -22,3 +22,8 @@ variable "target_group_arn_suffix" {
   description = "ARN suffix of the Target Group."
   type        = string
 }
+
+variable "nginx_log_group_name" {
+  description = "NGINX CloudWatch log group"
+  type        = string
+}

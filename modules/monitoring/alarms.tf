@@ -23,7 +23,7 @@ resource "aws_cloudwatch_metric_alarm" "asg_cpu_high" {
     aws_sns_topic.alerts.arn
   ]
 
-  treat_missing_data = "missing"
+  treat_missing_data = "notBreaching"
 
   tags = merge(
     local.common_tags,
@@ -135,6 +135,78 @@ resource "aws_cloudwatch_metric_alarm" "asg_insufficient_capacity" {
     local.common_tags,
     {
       Name = "${local.name_prefix}-asg-insufficient-capacity"
+    }
+  )
+}
+
+resource "aws_cloudwatch_metric_alarm" "ec2_status_check_failed" {
+
+  alarm_name        = "${local.name_prefix}-status-check-failed"
+  alarm_description = "Alarm when one or more EC2 instances fail status checks."
+
+  comparison_operator = "GreaterThanOrEqualToThreshold"
+  evaluation_periods  = 2
+  threshold           = 1
+
+  namespace   = "AWS/EC2"
+  metric_name = "StatusCheckFailed"
+  statistic   = "Maximum"
+  period      = 60
+
+  dimensions = {
+    AutoScalingGroupName = var.autoscaling_group_name
+  }
+
+  alarm_actions = [
+    aws_sns_topic.alerts.arn
+  ]
+
+  ok_actions = [
+    aws_sns_topic.alerts.arn
+  ]
+
+  treat_missing_data = "notBreaching"
+
+  tags = merge(
+    local.common_tags,
+    {
+      Name = "${local.name_prefix}-status-check-failed"
+    }
+  )
+}
+
+resource "aws_cloudwatch_metric_alarm" "alb_target_response_time" {
+
+  alarm_name        = "${local.name_prefix}-alb-target-response-time"
+  alarm_description = "Alarm when ALB target response time exceeds 2 seconds."
+
+  comparison_operator = "GreaterThanThreshold"
+  evaluation_periods  = 2
+  threshold           = 2
+
+  namespace   = "AWS/ApplicationELB"
+  metric_name = "TargetResponseTime"
+  statistic   = "Average"
+  period      = 300
+
+  dimensions = {
+    LoadBalancer = var.load_balancer_arn_suffix
+  }
+
+  alarm_actions = [
+    aws_sns_topic.alerts.arn
+  ]
+
+  ok_actions = [
+    aws_sns_topic.alerts.arn
+  ]
+
+  treat_missing_data = "notBreaching"
+
+  tags = merge(
+    local.common_tags,
+    {
+      Name = "${local.name_prefix}-alb-target-response-time"
     }
   )
 }

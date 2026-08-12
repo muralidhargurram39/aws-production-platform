@@ -3,3 +3,12 @@ plugin "aws" {
   version = "0.39.0"
   source  = "github.com/terraform-linters/tflint-ruleset-aws"
 }
+
+plugin "terraform" {
+  enabled = true
+  preset  = "recommended"
+}
+
+rule "terraform_unused_declarations" {
+  enabled = false
+}

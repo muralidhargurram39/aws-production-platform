@@ -1,8 +1,11 @@
 resource "aws_s3_bucket" "logs" {
 
+  #checkov:skip=CKV_AWS_144:Cross-region replication is configured by the disaster-recovery module, which uses this bucket as its replication source and replicates it to the DR logs replica.
+  #checkov:skip=CKV2_AWS_62:S3 event notifications are intentionally not configured because this bucket has no event-driven consumer.
+
   bucket = "${local.name_prefix}-${data.aws_caller_identity.current.account_id}-logs"
 
-  force_destroy = true
+  force_destroy = var.force_destroy
 
   tags = local.common_tags
 }
@@ -23,9 +26,12 @@ resource "aws_s3_bucket_server_side_encryption_configuration" "logs" {
   rule {
 
     apply_server_side_encryption_by_default {
-      sse_algorithm = "AES256"
+
+      sse_algorithm     = "aws:kms"
+      kms_master_key_id = var.kms_key_arn
     }
 
+    bucket_key_enabled = true
   }
 }
 
@@ -44,7 +50,7 @@ resource "aws_s3_bucket_ownership_controls" "logs" {
   bucket = aws_s3_bucket.logs.id
 
   rule {
-    object_ownership = "BucketOwnerPreferred"
+    object_ownership = "BucketOwnerEnforced"
   }
 }
 
@@ -58,6 +64,10 @@ resource "aws_s3_bucket_lifecycle_configuration" "logs" {
     status = "Enabled"
 
     filter {}
+
+    abort_incomplete_multipart_upload {
+      days_after_initiation = 7
+    }
 
     transition {
 

@@ -21,3 +21,9 @@ variable "backup_tag_value" {
 
   default = "true"
 }
+
+variable "force_destroy" {
+  description = "Force delete non-empty bucket"
+  type        = bool
+  default     = false
+}

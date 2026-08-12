@@ -2,6 +2,10 @@ data "aws_caller_identity" "current" {}
 
 data "aws_iam_policy_document" "flow_logs_kms" {
 
+  #checkov:skip=CKV_AWS_109:KMS key policy uses Resource "*" by design; CloudWatch Logs access is limited to the regional service principal
+  #checkov:skip=CKV_AWS_111:KMS key policy uses Resource "*" by design; CloudWatch Logs access is limited to the regional service principal
+  #checkov:skip=CKV_AWS_356:KMS key policy uses Resource "*" by design; the policy has an explicit CloudWatch Logs principal
+
   statement {
     sid = "EnableRootPermissions"
 

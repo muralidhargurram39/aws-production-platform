@@ -29,13 +29,12 @@ data "aws_iam_policy_document" "github_assume_role" {
     }
 
     condition {
-
-      test = "StringLike"
-
+      test     = "StringLike"
       variable = "token.actions.githubusercontent.com:sub"
 
       values = [
-        "repo:${var.github_owner}@*/${var.github_repository}@*:ref:refs/heads/*"
+        "repo:${var.github_owner}@*/${var.github_repository}@*:ref:refs/heads/*",
+        "repo:${var.github_owner}@*/${var.github_repository}@*:pull_request"
       ]
     }
   }
@@ -54,9 +53,3 @@ resource "aws_iam_role" "github_actions" {
   }
 }
 
-resource "aws_iam_role_policy_attachment" "administrator" {
-
-  role = aws_iam_role.github_actions.name
-
-  policy_arn = "arn:aws:iam::aws:policy/AdministratorAccess"
-}

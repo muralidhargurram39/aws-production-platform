@@ -21,13 +21,6 @@ output "application_security_group_id" {
   value = module.security.application_security_group_id
 }
 
-output "database_security_group_id" {
-  value = module.security.database_security_group_id
-}
-
-output "management_security_group_id" {
-  value = module.security.management_security_group_id
-}
 output "ec2_role_name" {
   value = module.iam.ec2_role_name
 }
@@ -164,14 +157,44 @@ output "access_analyzer_name" {
 # value = module.guardduty.guardduty_detector_arn
 #}
 
-output "replica_bucket_name" {
-  value = module.disaster_recovery.replica_bucket_name
+output "replica_bucket_names" {
+  description = "Names of the DR replica buckets"
+
+  value = module.disaster_recovery.replica_bucket_names
 }
 
-output "replica_bucket_arn" {
-  value = module.disaster_recovery.replica_bucket_arn
+output "replica_bucket_arns" {
+  description = "ARNs of the DR replica buckets"
+
+  value = module.disaster_recovery.replica_bucket_arns
 }
 
-output "github_actions_role_arn" {
-  value = module.github_oidc.github_actions_role_arn
+output "route53_zone_id" {
+  description = "Route53 Hosted Zone ID"
+  value       = module.route53.zone_id
+}
+
+output "route53_name_servers" {
+  description = "Route53 Name Servers"
+  value       = module.route53.name_servers
+}
+
+output "acm_certificate_arn" {
+  description = "CloudFront ACM Certificate ARN"
+  value       = module.acm.certificate_arn
+}
+
+output "acm_certificate_status" {
+  description = "CloudFront ACM Certificate Status"
+  value       = module.acm.certificate_status
+}
+
+output "acm_domain_validation_options" {
+  description = "ACM DNS Validation Records"
+  value       = module.acm.domain_validation_options
+}
+
+output "acm_certificate_domain" {
+  description = "Primary ACM certificate domain"
+  value       = module.acm.certificate_domain_name
 }

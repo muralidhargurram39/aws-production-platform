@@ -1,0 +1,81 @@
+---
+name: Terraform PR Validation
+
+"on":
+  pull_request:
+    branches:
+      - main
+
+permissions:
+  id-token: write
+  contents: read
+
+jobs:
+  validate:
+    name: Validate Terraform
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v5
+        with:
+          role-to-assume: ${{ vars.AWS_ROLE_ARN }}
+          aws-region: ap-south-2
+          allowed-account-ids: 626311400372
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v3
+
+      - name: Terraform Format Check
+        run: terraform fmt -check -recursive
+
+      - name: Terraform Init
+        working-directory: environments/dev
+        run: terraform init
+
+      - name: Terraform Validate
+        working-directory: environments/dev
+        run: terraform validate
+
+      - name: Setup TFLint
+        uses: terraform-linters/setup-tflint@v4
+
+      - name: Initialize TFLint
+        run: tflint --init
+
+      - name: Run TFLint
+        run: tflint --recursive
+
+      - name: Run Checkov
+        uses: bridgecrewio/checkov-action@v12
+        with:
+          directory: .
+          framework: terraform
+      
+      - name: Terraform Plan
+        working-directory: environments/dev
+        run: |
+          set +e
+          terraform plan -out=tfplan -no-color 2>&1 | tee "$GITHUB_WORKSPACE/terraform-plan.log"
+          rc=${PIPESTATUS[0]}
+          echo "Terraform plan exit code: $rc"
+          exit "$rc"
+
+      - name: Upload Terraform Plan Log
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: terraform-plan-log
+          path: terraform-plan.log
+          if-no-files-found: warn
+
+      - name: Upload Terraform Plan
+        if: success()
+        uses: actions/upload-artifact@v4
+        with:
+          name: terraform-plan
+          path: environments/dev/tfplan    
+      

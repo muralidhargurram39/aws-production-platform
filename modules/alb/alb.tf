@@ -1,5 +1,7 @@
 resource "aws_lb" "application" {
 
+  #checkov:skip=CKV2_AWS_28:ALB is intentionally protected behind CloudFront WAF; HTTPS origin access is restricted to the AWS CloudFront origin-facing managed prefix list.
+
   name = "${local.name_prefix}-alb"
 
   internal           = false
@@ -11,7 +13,7 @@ resource "aws_lb" "application" {
 
   subnets = var.public_subnet_ids
 
-  enable_deletion_protection = false
+  enable_deletion_protection = var.enable_deletion_protection
 
   enable_cross_zone_load_balancing = true
 

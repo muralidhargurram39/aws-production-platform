@@ -40,3 +40,27 @@ variable "access_logs_prefix" {
   type        = string
   default     = "alb"
 }
+
+variable "enable_https" {
+  description = "Enable HTTPS listener"
+  type        = bool
+  default     = false
+}
+
+variable "certificate_arn" {
+  description = "Regional ACM certificate ARN for the ALB"
+  type        = string
+  default     = null
+}
+
+variable "tags" {
+  description = "Resource tags"
+  type        = map(string)
+  default     = {}
+}
+
+variable "enable_deletion_protection" {
+  description = "Enable ALB deletion protection"
+  type        = bool
+  default     = true
+}
