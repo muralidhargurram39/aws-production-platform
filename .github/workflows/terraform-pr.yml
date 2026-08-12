@@ -54,7 +54,28 @@ jobs:
         with:
           directory: .
           framework: terraform
-
+      
       - name: Terraform Plan
         working-directory: environments/dev
-        run: terraform plan -no-color
+        run: |
+          set +e
+          terraform plan -out=tfplan -no-color 2>&1 | tee "$GITHUB_WORKSPACE/terraform-plan.log"
+          rc=${PIPESTATUS[0]}
+          echo "Terraform plan exit code: $rc"
+          exit "$rc"
+
+      - name: Upload Terraform Plan Log
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: terraform-plan-log
+          path: terraform-plan.log
+          if-no-files-found: warn
+
+      - name: Upload Terraform Plan
+        if: success()
+        uses: actions/upload-artifact@v4
+        with:
+          name: terraform-plan
+          path: environments/dev/tfplan    
+      
