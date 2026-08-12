@@ -31,6 +31,9 @@ data "aws_iam_policy_document" "monitoring" {
       "logs:DescribeLogGroups",
       "logs:PutRetentionPolicy",
       "logs:DeleteRetentionPolicy",
+      "logs:PutResourcePolicy",
+      "logs:DeleteResourcePolicy",
+      "logs:DescribeResourcePolicies",
 
       "logs:TagResource",
       "logs:UntagResource",
