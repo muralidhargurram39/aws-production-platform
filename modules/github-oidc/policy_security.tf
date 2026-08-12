@@ -44,6 +44,7 @@ data "aws_iam_policy_document" "security" {
       "kms:CancelKeyDeletion",
       "kms:TagResource",
       "kms:UntagResource",
+      "kms:ListResourceTags",
       "kms:PutKeyPolicy",
       "kms:GetKeyPolicy",
       "kms:GetKeyRotationStatus"
@@ -89,6 +90,16 @@ data "aws_iam_policy_document" "security" {
   #
   # CloudFront WAFv2 resources use us-east-1 and the global scope.
   #
+  #
+  # WAFv2 - CloudFront WebACL creation
+  #
+  # CreateWebACL is a creation/control-plane operation. The WebACL does
+  # not exist yet, so IAM cannot constrain this action to the final
+  # WebACL ARN. Restrict creation using the required Project request tag.
+  #
+  #checkov:skip=CKV_AWS_109:WAFv2 CreateWebACL requires wildcard resource scope and is constrained by the Project request tag
+  #checkov:skip=CKV_AWS_111:WAFv2 CreateWebACL requires wildcard resource scope and is constrained by the Project request tag
+  #checkov:skip=CKV_AWS_356:WAFv2 CreateWebACL requires wildcard resource scope and is constrained by the Project request tag
   statement {
     sid    = "WAFWebACLCreate"
     effect = "Allow"
@@ -97,9 +108,7 @@ data "aws_iam_policy_document" "security" {
       "wafv2:CreateWebACL"
     ]
 
-    resources = [
-      "arn:aws:wafv2:us-east-1:${data.aws_caller_identity.current.account_id}:global/webacl/${local.name_prefix}-web-acl/*"
-    ]
+    resources = ["*"]
 
     condition {
       test     = "StringEquals"

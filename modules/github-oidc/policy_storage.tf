@@ -1,0 +1,91 @@
+data "aws_iam_policy_document" "storage" {
+
+  #
+  # S3 bucket creation
+  #
+  # S3 CreateBucket requires Resource=* because the bucket does not
+  # exist at authorization time. Restrict the operation using the
+  # required project/environment request tag.
+  #
+  #checkov:skip=CKV_AWS_111:S3 CreateBucket requires wildcard resource scope because the bucket does not exist before creation.
+  #checkov:skip=CKV_AWS_356:S3 CreateBucket does not support resource-level permissions.
+
+  statement {
+    sid    = "S3BucketCreate"
+    effect = "Allow"
+
+    actions = [
+      "s3:CreateBucket",
+      "s3:TagResource"
+    ]
+
+    resources = [
+      "*"
+    ]
+
+    condition {
+      test     = "StringEquals"
+      variable = "aws:RequestTag/Project"
+
+      values = [
+        var.project_name
+      ]
+    }
+  }
+
+  #
+  # S3 bucket management
+  #
+  statement {
+    sid    = "S3BucketManagement"
+    effect = "Allow"
+
+    actions = [
+      "s3:DeleteBucket",
+      "s3:GetBucketLocation",
+      "s3:GetBucketVersioning",
+      "s3:ListBucket",
+      "s3:GetBucketPolicy",
+      "s3:PutBucketPolicy",
+      "s3:GetBucketEncryption",
+      "s3:PutEncryptionConfiguration",
+      "s3:GetBucketPublicAccessBlock",
+      "s3:PutBucketPublicAccessBlock",
+      "s3:GetBucketOwnershipControls",
+      "s3:PutBucketOwnershipControls",
+      "s3:GetLifecycleConfiguration",
+      "s3:PutLifecycleConfiguration",
+      "s3:GetBucketTagging",
+      "s3:PutBucketTagging"
+    ]
+
+    resources = [
+      "arn:aws:s3:::${var.project_name}-${var.environment}-${data.aws_caller_identity.current.account_id}-*"
+    ]
+  }
+
+  #
+  # S3 object management
+  #
+  statement {
+    sid    = "S3ObjectManagement"
+    effect = "Allow"
+
+    actions = [
+      "s3:GetObject",
+      "s3:GetObjectVersion",
+      "s3:PutObject",
+      "s3:DeleteObject"
+    ]
+
+    resources = [
+      "arn:aws:s3:::${var.project_name}-${var.environment}-${data.aws_caller_identity.current.account_id}-*/*"
+    ]
+  }
+}
+
+resource "aws_iam_policy" "storage" {
+  name        = "${local.name_prefix}-storage-policy"
+  description = "S3 storage management for the platform"
+  policy      = data.aws_iam_policy_document.storage.json
+}

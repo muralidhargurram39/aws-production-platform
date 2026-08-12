@@ -13,6 +13,7 @@ locals {
     tagging    = aws_iam_policy.tagging.arn
     acm        = aws_iam_policy.acm.arn
     route53    = aws_iam_policy.route53.arn
+    storage    = aws_iam_policy.storage.arn
   }
 }
 
