@@ -66,4 +66,14 @@ data "aws_iam_policy_document" "backend" {
       var.backend_kms_key_arn
     ]
   }
+  statement {
+    sid    = "TerraformEC2Read"
+    effect = "Allow"
+
+    actions = [
+      "ec2:DescribeManagedPrefixLists",
+    ]
+
+    resources = ["*"]
+  }
 }
