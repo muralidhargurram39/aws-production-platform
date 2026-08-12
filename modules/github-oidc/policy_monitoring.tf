@@ -28,7 +28,9 @@ data "aws_iam_policy_document" "monitoring" {
 
       "logs:CreateLogGroup",
       "logs:DeleteLogGroup",
+      "logs:DeleteMetricFilter",
       "logs:DescribeLogGroups",
+      "logs:DescribeMetricFilters",
       "logs:PutRetentionPolicy",
       "logs:DeleteRetentionPolicy",
       "logs:PutResourcePolicy",
@@ -38,6 +40,7 @@ data "aws_iam_policy_document" "monitoring" {
       "logs:TagResource",
       "logs:UntagResource",
       "logs:ListTagsForResource",
+      "logs:PutMetricFilter",
 
       "sns:CreateTopic",
       "sns:DeleteTopic",

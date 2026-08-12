@@ -1,18 +1,33 @@
 data "aws_iam_policy_document" "security" {
 
   #
-  # KMS
+  # KMS account-level read operations
   #
-  # CreateKey and ListAliases are account-level KMS APIs and require
-  # Resource = "*". CreateKey is constrained by the Project request tag.
+  # ListAliases is an account-level read operation and must not depend
+  # on a CreateKey request-tag condition.
   #
   statement {
-    sid    = "KMSAccountOperations"
+    sid    = "KMSAccountRead"
     effect = "Allow"
 
     actions = [
-      "kms:CreateKey",
       "kms:ListAliases"
+    ]
+
+    resources = ["*"]
+  }
+
+  #
+  # KMS key creation
+  #
+  # CreateKey is constrained by the Project request tag.
+  #
+  statement {
+    sid    = "KMSKeyCreate"
+    effect = "Allow"
+
+    actions = [
+      "kms:CreateKey"
     ]
 
     resources = ["*"]

@@ -21,7 +21,9 @@ data "aws_iam_policy_document" "networking" {
       # EC2 / VPC
       "ec2:DescribeAvailabilityZones",
       "ec2:DescribeAddresses",
+      "ec2:DescribeAddressesAttribute",
       "ec2:DescribeImages",
+      "ec2:DescribeInternetGateways",
       "ec2:DescribeInstances",
       "ec2:DescribeLaunchTemplates",
       "ec2:DescribeLaunchTemplateVersions",
