@@ -1,33 +1,15 @@
 data "aws_iam_policy_document" "security" {
 
   #
-  # KMS account-level read operations
-  #
-  # ListAliases is an account-level read operation and must not depend
-  # on a CreateKey request-tag condition.
+  # KMS account-level operations
   #
   statement {
-    sid    = "KMSAccountRead"
+    sid    = "KMSAccountOperations"
     effect = "Allow"
 
     actions = [
+      "kms:CreateKey",
       "kms:ListAliases"
-    ]
-
-    resources = ["*"]
-  }
-
-  #
-  # KMS key creation
-  #
-  # CreateKey is constrained by the Project request tag.
-  #
-  statement {
-    sid    = "KMSKeyCreate"
-    effect = "Allow"
-
-    actions = [
-      "kms:CreateKey"
     ]
 
     resources = ["*"]
@@ -45,7 +27,7 @@ data "aws_iam_policy_document" "security" {
   #
   # KMS key management
   #
-  # Restrict management to KMS keys tagged for this project.
+  # Restrict key management to keys tagged for this project.
   #
   statement {
     sid    = "KMSKeyManagement"
@@ -82,8 +64,7 @@ data "aws_iam_policy_document" "security" {
   #
   # KMS alias management
   #
-  # CreateAlias requires authorization for the alias resource in the IAM
-  # policy and the target key in the KMS key policy.
+  # CreateAlias requires permission on both the alias and target key.
   #
   statement {
     sid    = "KMSAliasManagement"
@@ -101,20 +82,17 @@ data "aws_iam_policy_document" "security" {
   }
 
   #
-  # WAFv2 - CloudFront WebACL
-  #
-  # CloudFront WAFv2 resources use us-east-1 and the global scope.
-  #
-  #
-  # WAFv2 - CloudFront WebACL creation
+  # WAFv2 WebACL creation
   #
   # CreateWebACL is a creation/control-plane operation. The WebACL does
-  # not exist yet, so IAM cannot constrain this action to the final
-  # WebACL ARN. Restrict creation using the required Project request tag.
+  # not exist yet, so use Resource="*".
   #
-  #checkov:skip=CKV_AWS_109:WAFv2 CreateWebACL requires wildcard resource scope and is constrained by the Project request tag
-  #checkov:skip=CKV_AWS_111:WAFv2 CreateWebACL requires wildcard resource scope and is constrained by the Project request tag
-  #checkov:skip=CKV_AWS_356:WAFv2 CreateWebACL requires wildcard resource scope and is constrained by the Project request tag
+  # The management statement below restricts operations on existing
+  # WebACLs using the Project resource tag.
+  #
+  #checkov:skip=CKV_AWS_109:WAFv2 CreateWebACL requires wildcard resource scope
+  #checkov:skip=CKV_AWS_111:WAFv2 CreateWebACL requires wildcard resource scope
+  #checkov:skip=CKV_AWS_356:WAFv2 CreateWebACL requires wildcard resource scope
   statement {
     sid    = "WAFWebACLCreate"
     effect = "Allow"
@@ -124,15 +102,6 @@ data "aws_iam_policy_document" "security" {
     ]
 
     resources = ["*"]
-
-    condition {
-      test     = "StringEquals"
-      variable = "aws:RequestTag/Project"
-
-      values = [
-        var.project_name
-      ]
-    }
   }
 
   #
@@ -165,9 +134,7 @@ data "aws_iam_policy_document" "security" {
   }
 
   #
-  # WAFv2 discovery
-  #
-  # ListWebACLs is an account-level list operation.
+  # WAFv2 read/list operations
   #
   statement {
     sid    = "WAFRead"

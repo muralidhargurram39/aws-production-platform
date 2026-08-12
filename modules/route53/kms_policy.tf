@@ -1,5 +1,8 @@
 data "aws_caller_identity" "current" {}
 
+#
+# KMS key used to encrypt Route 53 query logs.
+#
 data "aws_iam_policy_document" "route53_logs_kms" {
 
   #checkov:skip=CKV_AWS_109:KMS key policy intentionally grants the owning account root full key administration permissions.
@@ -54,12 +57,18 @@ data "aws_iam_policy_document" "route53_logs_kms" {
   }
 }
 
+#
+# KMS key used by Route 53 DNSSEC.
+#
 data "aws_iam_policy_document" "route53_dnssec_kms" {
 
   #checkov:skip=CKV_AWS_109:KMS key policy intentionally grants the owning account root full key administration permissions.
   #checkov:skip=CKV_AWS_111:KMS key policy intentionally grants the owning account root full key administration permissions.
   #checkov:skip=CKV_AWS_356:KMS key policy uses Resource "*" because KMS key-policy statements are scoped to the key policy itself.
 
+  #
+  # Account root retains full key administration.
+  #
   statement {
     sid    = "EnableAccountRootPermissions"
     effect = "Allow"
@@ -76,6 +85,10 @@ data "aws_iam_policy_document" "route53_dnssec_kms" {
     resources = ["*"]
   }
 
+  #
+  # Route 53 DNSSEC service must be able to inspect the public key
+  # and perform DNSSEC signing operations.
+  #
   statement {
     sid    = "AllowRoute53DNSSECService"
     effect = "Allow"
@@ -97,6 +110,10 @@ data "aws_iam_policy_document" "route53_dnssec_kms" {
     resources = ["*"]
   }
 
+  #
+  # Route 53 DNSSEC requires a grant so the AWS service can use the key
+  # on behalf of the hosted zone.
+  #
   statement {
     sid    = "AllowRoute53DNSSECCreateGrant"
     effect = "Allow"
@@ -119,7 +136,9 @@ data "aws_iam_policy_document" "route53_dnssec_kms" {
       test     = "Bool"
       variable = "kms:GrantIsForAWSResource"
 
-      values = ["true"]
+      values = [
+        "true"
+      ]
     }
   }
 }

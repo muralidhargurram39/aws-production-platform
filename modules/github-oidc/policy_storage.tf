@@ -3,34 +3,23 @@ data "aws_iam_policy_document" "storage" {
   #
   # S3 bucket creation
   #
-  # S3 CreateBucket requires Resource=* because the bucket does not
-  # exist at authorization time. Restrict the operation using the
-  # required project/environment request tag.
+  # CreateBucket requires Resource="*" because the bucket does not exist
+  # when IAM authorization is evaluated.
   #
-  #checkov:skip=CKV_AWS_111:S3 CreateBucket requires wildcard resource scope because the bucket does not exist before creation.
-  #checkov:skip=CKV_AWS_356:S3 CreateBucket does not support resource-level permissions.
-
+  # Subsequent bucket management is restricted to this project's
+  # environment/account bucket-name prefix below.
+  #
+  #checkov:skip=CKV_AWS_111:S3 CreateBucket requires wildcard resource scope
+  #checkov:skip=CKV_AWS_356:S3 CreateBucket does not support resource-level permissions
   statement {
     sid    = "S3BucketCreate"
     effect = "Allow"
 
     actions = [
-      "s3:CreateBucket",
-      "s3:TagResource"
+      "s3:CreateBucket"
     ]
 
-    resources = [
-      "*"
-    ]
-
-    condition {
-      test     = "StringEquals"
-      variable = "aws:RequestTag/Project"
-
-      values = [
-        var.project_name
-      ]
-    }
+    resources = ["*"]
   }
 
   #

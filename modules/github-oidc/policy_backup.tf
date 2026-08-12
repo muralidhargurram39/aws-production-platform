@@ -3,8 +3,8 @@ data "aws_iam_policy_document" "backup" {
   #
   # Backup Vault
   #
-  # Backup vault creation and account-level control-plane operations require
-  # Resource="*" because the vault does not exist at creation time.
+  # Backup vault creation and account-level control-plane operations
+  # require Resource="*" because the vault does not exist yet.
   #
   #checkov:skip=CKV_AWS_109:Backup vault creation/control-plane APIs require wildcard resource scope
   #checkov:skip=CKV_AWS_111:Backup vault creation/control-plane APIs require wildcard resource scope
@@ -69,5 +69,30 @@ data "aws_iam_policy_document" "backup" {
     ]
 
     resources = ["*"]
+  }
+
+  #
+  # KMS access used by AWS Backup.
+  #
+  # The Dev GitHub Actions role must be able to authorize use of the
+  # customer-managed KMS key associated with the Backup vault.
+  #
+  statement {
+    sid    = "BackupKMS"
+    effect = "Allow"
+
+    actions = [
+      "kms:CreateGrant",
+      "kms:DescribeKey",
+      "kms:GenerateDataKey",
+      "kms:Encrypt",
+      "kms:Decrypt",
+      "kms:ReEncryptFrom",
+      "kms:ReEncryptTo"
+    ]
+
+    resources = [
+      "arn:aws:kms:*:${data.aws_caller_identity.current.account_id}:key/*"
+    ]
   }
 }
