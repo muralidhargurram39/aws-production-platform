@@ -3,6 +3,11 @@ resource "aws_s3_bucket" "config" {
   #checkov:skip=CKV2_AWS_62:S3 event notifications are intentionally not configured because this bucket has no event-driven consumer.
   bucket        = "${var.project_name}-${var.environment}-${data.aws_caller_identity.current.account_id}-config"
   force_destroy = var.force_destroy
+  tags = {
+    Project     = var.project_name
+    Environment = var.environment
+    ManagedBy   = "Terraform"
+  }
 }
 
 resource "aws_s3_bucket_versioning" "config" {
