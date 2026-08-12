@@ -15,8 +15,46 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
+  bootstrap:
+    name: Apply Bootstrap
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v5
+        with:
+          role-to-assume: ${{ vars.AWS_ROLE_ARN }}
+          aws-region: ap-south-2
+          allowed-account-ids: 626311400372
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v3
+
+      - name: Terraform Format Check
+        run: terraform fmt -check -recursive
+
+      - name: Terraform Init
+        working-directory: bootstrap
+        run: terraform init
+
+      - name: Terraform Validate
+        working-directory: bootstrap
+        run: terraform validate
+
+      - name: Terraform Plan
+        working-directory: bootstrap
+        run: terraform plan -out=tfplan -no-color
+
+      - name: Terraform Apply
+        working-directory: bootstrap
+        run: terraform apply -auto-approve tfplan
+
   validate:
-    name: Validate Infrastructure
+    name: Validate Dev Infrastructure
+    needs: bootstrap
     runs-on: ubuntu-latest
 
     steps:
@@ -71,7 +109,7 @@ jobs:
           retention-days: 1
 
   deploy:
-    name: Deploy Infrastructure
+    name: Deploy Dev Infrastructure
     needs: validate
     runs-on: ubuntu-latest
     environment:
