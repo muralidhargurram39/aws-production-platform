@@ -11,6 +11,8 @@ locals {
     backup     = aws_iam_policy.backup.arn
     cloudfront = aws_iam_policy.cloudfront.arn
     tagging    = aws_iam_policy.tagging.arn
+    acm        = aws_iam_policy.acm.arn
+    route53    = aws_iam_policy.route53.arn
   }
 }
 

@@ -86,6 +86,9 @@ data "aws_iam_policy_document" "networking" {
       "ec2:CreateSecurityGroup",
       "ec2:CreateSecurityGroupRule",
 
+      # Resource tags
+      "ec2:CreateTags",
+
       # Load Balancer
       "elasticloadbalancing:CreateLoadBalancer",
       "elasticloadbalancing:CreateListener",
