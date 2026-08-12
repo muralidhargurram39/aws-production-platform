@@ -43,7 +43,10 @@ data "aws_iam_policy_document" "security" {
       "kms:ScheduleKeyDeletion",
       "kms:CancelKeyDeletion",
       "kms:TagResource",
-      "kms:UntagResource"
+      "kms:UntagResource",
+      "kms:PutKeyPolicy",
+      "kms:GetKeyPolicy",
+      "kms:GetKeyRotationStatus"
     ]
 
     resources = [
