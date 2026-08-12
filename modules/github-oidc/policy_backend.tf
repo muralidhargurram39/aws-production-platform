@@ -67,13 +67,26 @@ data "aws_iam_policy_document" "backend" {
     ]
   }
   statement {
-    sid    = "TerraformEC2Read"
+    sid    = "TerraformEC2DescribeManagedPrefixLists"
     effect = "Allow"
 
     actions = [
-      "ec2:DescribeManagedPrefixLists",
+      "ec2:DescribeManagedPrefixLists"
     ]
 
     resources = ["*"]
+  }
+
+  statement {
+    sid    = "TerraformEC2GetManagedPrefixListEntries"
+    effect = "Allow"
+
+    actions = [
+      "ec2:GetManagedPrefixListEntries"
+    ]
+
+    resources = [
+      "arn:aws:ec2:${data.aws_region.current.name}:aws:prefix-list/*"
+    ]
   }
 }
