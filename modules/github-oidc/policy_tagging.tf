@@ -6,7 +6,9 @@ data "aws_iam_policy_document" "tagging" {
     effect = "Allow"
 
     actions = [
-      "tag:*"
+      "tag:GetResources",
+      "tag:TagResources",
+      "tag:UntagResources"
     ]
 
     resources = ["*"]

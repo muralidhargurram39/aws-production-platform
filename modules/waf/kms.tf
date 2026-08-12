@@ -2,6 +2,10 @@ data "aws_caller_identity" "current" {}
 
 data "aws_iam_policy_document" "waf_logs_kms" {
 
+  #checkov:skip=CKV_AWS_109:KMS key policy uses Resource "*" by design; WAF logging uses the explicit regional CloudWatch Logs service principal
+  #checkov:skip=CKV_AWS_111:KMS key policy uses Resource "*" by design; WAF logging uses the explicit regional CloudWatch Logs service principal
+  #checkov:skip=CKV_AWS_356:KMS key policy uses Resource "*" by design; the policy has an explicit CloudWatch Logs principal
+
   statement {
 
     sid    = "EnableRootPermissions"

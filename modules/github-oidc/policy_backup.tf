@@ -3,8 +3,13 @@ data "aws_iam_policy_document" "backup" {
   #
   # Backup Vault
   #
+  # Backup vault creation and account-level control-plane operations require
+  # Resource="*" because the vault does not exist at creation time.
+  #
+  #checkov:skip=CKV_AWS_109:Backup vault creation/control-plane APIs require wildcard resource scope
+  #checkov:skip=CKV_AWS_111:Backup vault creation/control-plane APIs require wildcard resource scope
+  #checkov:skip=CKV_AWS_356:Backup vault creation/control-plane APIs require Resource=*
   statement {
-
     sid    = "BackupVault"
     effect = "Allow"
 
@@ -28,8 +33,10 @@ data "aws_iam_policy_document" "backup" {
   #
   # Backup Plans
   #
+  #checkov:skip=CKV_AWS_109:Backup plan creation/control-plane APIs require wildcard resource scope
+  #checkov:skip=CKV_AWS_111:Backup plan creation/control-plane APIs require wildcard resource scope
+  #checkov:skip=CKV_AWS_356:Backup plan creation/control-plane APIs require Resource=*
   statement {
-
     sid    = "BackupPlans"
     effect = "Allow"
 
@@ -47,8 +54,10 @@ data "aws_iam_policy_document" "backup" {
   #
   # Backup Selections
   #
+  #checkov:skip=CKV_AWS_109:Backup selection creation/control-plane APIs require wildcard resource scope
+  #checkov:skip=CKV_AWS_111:Backup selection creation/control-plane APIs require wildcard resource scope
+  #checkov:skip=CKV_AWS_356:Backup selection creation/control-plane APIs require Resource=*
   statement {
-
     sid    = "BackupSelections"
     effect = "Allow"
 

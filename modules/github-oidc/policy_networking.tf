@@ -3,6 +3,15 @@ data "aws_iam_policy_document" "networking" {
   #
   # Read-only operations
   #
+
+  #
+  # Create APIs generally require Resource="*" because the target resource
+  # does not exist before the API call.
+  #
+  #checkov:skip=CKV_AWS_109:Networking create APIs require wildcard resource scope
+  #checkov:skip=CKV_AWS_111:Networking create APIs require wildcard resource scope
+  #checkov:skip=CKV_AWS_356:Networking create APIs require Resource=*
+
   statement {
     sid    = "NetworkingRead"
     effect = "Allow"

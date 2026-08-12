@@ -10,20 +10,18 @@ variable "account_id" {
   type = string
 }
 
-variable "source_bucket_arn" {
-  type = string
-}
+variable "replication_buckets" {
+  description = "S3 buckets to replicate to the DR region"
 
-variable "source_bucket_name" {
-  type = string
+  type = map(object({
+    bucket_name = string
+    bucket_arn  = string
+    kms_key_arn = string
+  }))
 }
 
 variable "kms_key_arn" {
-  description = "KMS key ARN for the DR bucket"
-  type        = string
-}
-variable "source_kms_key_arn" {
-  description = "KMS key ARN used by the source bucket"
+  description = "KMS key ARN used to encrypt DR replica buckets"
   type        = string
 }
 
@@ -32,4 +30,3 @@ variable "force_destroy" {
   type        = bool
   default     = false
 }
-

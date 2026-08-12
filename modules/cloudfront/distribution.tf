@@ -1,13 +1,22 @@
 resource "aws_cloudfront_distribution" "main" {
 
+  #checkov:skip=CKV2_AWS_47:CloudFront is associated with the CLOUDFRONT WAF WebACL, which includes AWSManagedRulesKnownBadInputsRuleSet containing the Log4j protections.
+  #checkov:skip=CKV_AWS_310:Single ALB origin is intentional for this environment; no independent secondary origin currently exists for meaningful CloudFront origin failover.
+  #checkov:skip=CKV_AWS_374:Distribution is intentionally globally accessible; no geographic access restriction is required for this application.
+
   enabled             = true
   is_ipv6_enabled     = true
   comment             = "${local.name_prefix} distribution"
-  default_root_object = ""
+  default_root_object = "index.html"
 
   web_acl_id = var.web_acl_id
 
   aliases = var.aliases
+
+  logging_config {
+    bucket = var.logging_bucket
+    prefix = var.logging_prefix
+  }
 
   origin {
 

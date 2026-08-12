@@ -11,3 +11,13 @@ variable "force_destroy" {
   type        = bool
   default     = false
 }
+
+variable "kms_key_arn" {
+  description = "KMS key ARN for S3 encryption"
+  type        = string
+}
+
+variable "access_log_bucket_name" {
+  description = "S3 bucket receiving server access logs"
+  type        = string
+}

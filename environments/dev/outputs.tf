@@ -21,13 +21,6 @@ output "application_security_group_id" {
   value = module.security.application_security_group_id
 }
 
-output "database_security_group_id" {
-  value = module.security.database_security_group_id
-}
-
-output "management_security_group_id" {
-  value = module.security.management_security_group_id
-}
 output "ec2_role_name" {
   value = module.iam.ec2_role_name
 }
@@ -164,12 +157,16 @@ output "access_analyzer_name" {
 # value = module.guardduty.guardduty_detector_arn
 #}
 
-output "replica_bucket_name" {
-  value = module.disaster_recovery.replica_bucket_name
+output "replica_bucket_names" {
+  description = "Names of the DR replica buckets"
+
+  value = module.disaster_recovery.replica_bucket_names
 }
 
-output "replica_bucket_arn" {
-  value = module.disaster_recovery.replica_bucket_arn
+output "replica_bucket_arns" {
+  description = "ARNs of the DR replica buckets"
+
+  value = module.disaster_recovery.replica_bucket_arns
 }
 
 output "route53_zone_id" {

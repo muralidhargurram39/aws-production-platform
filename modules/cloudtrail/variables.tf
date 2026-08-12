@@ -26,3 +26,8 @@ variable "kms_key_arn" {
 
   type = string
 }
+
+variable "sns_topic_arn" {
+  description = "SNS topic ARN for CloudTrail log delivery notifications"
+  type        = string
+}

@@ -1,40 +1,30 @@
 data "aws_iam_policy_document" "monitoring" {
 
+  #
+  # Monitoring resources are created dynamically by Terraform.
+  # Several CloudWatch Logs/SNS/CloudWatch control-plane APIs require
+  # wildcard resource scope at creation time.
+  #
+  #checkov:skip=CKV_AWS_109:Monitoring creation/control-plane APIs require wildcard resource scope
+  #checkov:skip=CKV_AWS_111:Monitoring creation/control-plane APIs require wildcard resource scope
+  #checkov:skip=CKV_AWS_356:Monitoring creation/control-plane APIs require Resource=*
   statement {
-
     sid    = "Monitoring"
     effect = "Allow"
 
     actions = [
-
-      #
-      # CloudWatch Alarms
-      #
-
       "cloudwatch:PutMetricAlarm",
       "cloudwatch:DeleteAlarms",
       "cloudwatch:DescribeAlarms",
-
-      #
-      # CloudWatch Dashboards
-      #
 
       "cloudwatch:PutDashboard",
       "cloudwatch:GetDashboard",
       "cloudwatch:DeleteDashboards",
       "cloudwatch:ListDashboards",
 
-      #
-      # CloudWatch Tags
-      #
-
       "cloudwatch:TagResource",
       "cloudwatch:UntagResource",
       "cloudwatch:ListTagsForResource",
-
-      #
-      # CloudWatch Logs
-      #
 
       "logs:CreateLogGroup",
       "logs:DeleteLogGroup",
@@ -46,10 +36,6 @@ data "aws_iam_policy_document" "monitoring" {
       "logs:UntagResource",
       "logs:ListTagsForResource",
 
-      #
-      # SNS
-      #
-
       "sns:CreateTopic",
       "sns:DeleteTopic",
       "sns:GetTopicAttributes",
@@ -58,11 +44,8 @@ data "aws_iam_policy_document" "monitoring" {
       "sns:TagResource",
       "sns:UntagResource",
       "sns:ListTagsForResource"
-
     ]
 
-    resources = [
-      "*"
-    ]
+    resources = ["*"]
   }
 }

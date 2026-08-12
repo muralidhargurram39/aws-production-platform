@@ -3,26 +3,84 @@ data "aws_iam_policy_document" "identity" {
   #
   # IAM Read
   #
+  # Keep account-level discovery permissions separate from resource-scoped
+  # IAM reads. This avoids granting broad iam:Get*/iam:List* permissions.
+  #
   statement {
-
     sid    = "IAMRead"
     effect = "Allow"
 
     actions = [
-      "iam:Get*",
-      "iam:List*",
       "sts:GetCallerIdentity"
     ]
 
     resources = ["*"]
   }
 
+  statement {
+    sid    = "IAMRoleRead"
+    effect = "Allow"
+
+    actions = [
+      "iam:GetRole",
+      "iam:ListAttachedRolePolicies",
+      "iam:ListRolePolicies",
+      "iam:ListRoleTags"
+    ]
+
+    resources = [
+      local.iam_role_arn
+    ]
+  }
+
+  statement {
+    sid    = "IAMPolicyRead"
+    effect = "Allow"
+
+    actions = [
+      "iam:GetPolicy",
+      "iam:GetPolicyVersion",
+      "iam:ListPolicyVersions",
+      "iam:ListPolicyTags"
+    ]
+
+    resources = [
+      local.iam_policy_arn
+    ]
+  }
+
+  statement {
+    sid    = "InstanceProfileRead"
+    effect = "Allow"
+
+    actions = [
+      "iam:GetInstanceProfile"
+    ]
+
+    resources = [
+      local.instance_profile_arn
+    ]
+  }
+
+  statement {
+    sid    = "OIDCProviderRead"
+    effect = "Allow"
+
+    actions = [
+      "iam:GetOpenIDConnectProvider"
+    ]
+
+    resources = [
+      local.oidc_provider_arn
+    ]
+  }
+
   #
   # IAM Role Creation
-  # (Create APIs require "*" because the resource does not exist yet.)
+  #
+  # CreateRole supports resource-level permissions.
   #
   statement {
-
     sid    = "IAMRoleCreate"
     effect = "Allow"
 
@@ -30,14 +88,15 @@ data "aws_iam_policy_document" "identity" {
       "iam:CreateRole"
     ]
 
-    resources = ["*"]
+    resources = [
+      local.iam_role_arn
+    ]
   }
 
   #
   # IAM Role Management
   #
   statement {
-
     sid    = "IAMRoleManagement"
     effect = "Allow"
 
@@ -61,7 +120,6 @@ data "aws_iam_policy_document" "identity" {
   # IAM Policy Creation
   #
   statement {
-
     sid    = "IAMPolicyCreate"
     effect = "Allow"
 
@@ -69,14 +127,15 @@ data "aws_iam_policy_document" "identity" {
       "iam:CreatePolicy"
     ]
 
-    resources = ["*"]
+    resources = [
+      local.iam_policy_arn
+    ]
   }
 
   #
   # IAM Policy Management
   #
   statement {
-
     sid    = "IAMPolicyManagement"
     effect = "Allow"
 
@@ -96,7 +155,6 @@ data "aws_iam_policy_document" "identity" {
   # Instance Profile Creation
   #
   statement {
-
     sid    = "InstanceProfileCreate"
     effect = "Allow"
 
@@ -104,14 +162,15 @@ data "aws_iam_policy_document" "identity" {
       "iam:CreateInstanceProfile"
     ]
 
-    resources = ["*"]
+    resources = [
+      local.instance_profile_arn
+    ]
   }
 
   #
   # Instance Profile Management
   #
   statement {
-
     sid    = "InstanceProfileManagement"
     effect = "Allow"
 
@@ -130,7 +189,6 @@ data "aws_iam_policy_document" "identity" {
   # GitHub OIDC Provider Creation
   #
   statement {
-
     sid    = "OIDCProviderCreate"
     effect = "Allow"
 
@@ -138,14 +196,15 @@ data "aws_iam_policy_document" "identity" {
       "iam:CreateOpenIDConnectProvider"
     ]
 
-    resources = ["*"]
+    resources = [
+      local.oidc_provider_arn
+    ]
   }
 
   #
   # GitHub OIDC Provider Management
   #
   statement {
-
     sid    = "OIDCProviderManagement"
     effect = "Allow"
 

@@ -37,3 +37,13 @@ output "cloudfront_logs_bucket_arn" {
   description = "CloudFront logs bucket ARN"
   value       = aws_s3_bucket.cloudfront_logs.arn
 }
+
+output "access_logs_bucket_name" {
+  description = "S3 bucket receiving S3 server access logs"
+  value       = aws_s3_bucket.access_logs.bucket
+}
+
+output "access_logs_bucket_arn" {
+  description = "ARN of the S3 server access log bucket"
+  value       = aws_s3_bucket.access_logs.arn
+}

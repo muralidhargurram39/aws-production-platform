@@ -1,13 +1,10 @@
 resource "aws_iam_role" "replication" {
-
   name = "${var.project_name}-${var.environment}-s3-replication-role"
 
   assume_role_policy = jsonencode({
-
     Version = "2012-10-17"
 
     Statement = [
-
       {
         Sid    = "AllowS3ReplicationService"
         Effect = "Allow"
@@ -22,125 +19,93 @@ resource "aws_iam_role" "replication" {
   })
 }
 
-resource "aws_iam_policy" "replication" {
+data "aws_iam_policy_document" "replication" {
+  statement {
+    sid    = "ReadSourceBuckets"
+    effect = "Allow"
 
-  name = "${var.project_name}-${var.environment}-s3-replication-policy"
-
-  policy = jsonencode({
-
-    Version = "2012-10-17"
-
-    Statement = [
-
-      #
-      # ------------------------------------------------------------------
-      # Read Source Bucket Configuration
-      # ------------------------------------------------------------------
-      #
-      {
-        Sid    = "ReadSourceBucket"
-        Effect = "Allow"
-
-        Action = [
-          "s3:GetReplicationConfiguration",
-          "s3:ListBucket"
-        ]
-
-        Resource = [
-          var.source_bucket_arn
-        ]
-      },
-
-      #
-      # ------------------------------------------------------------------
-      # Read Source Objects
-      # Required for replication of versioned and KMS-encrypted objects.
-      # ------------------------------------------------------------------
-      #
-      {
-        Sid    = "ReadSourceObjects"
-        Effect = "Allow"
-
-        Action = [
-          "s3:GetObjectVersion",
-          "s3:GetObjectVersionAcl",
-          "s3:GetObjectVersionTagging",
-          "s3:GetObjectVersionForReplication",
-          "s3:GetObjectRetention",
-          "s3:GetObjectLegalHold"
-        ]
-
-        Resource = [
-          "${var.source_bucket_arn}/*"
-        ]
-      },
-
-      #
-      # ------------------------------------------------------------------
-      # Source KMS Key Permissions
-      # Required to decrypt source objects.
-      # ------------------------------------------------------------------
-      #
-      {
-        Sid    = "SourceKMS"
-        Effect = "Allow"
-
-        Action = [
-          "kms:Decrypt",
-          "kms:DescribeKey",
-          "kms:ReEncryptFrom"
-        ]
-
-        Resource = [
-          var.source_kms_key_arn
-        ]
-      },
-
-      #
-      # ------------------------------------------------------------------
-      # Destination KMS Key Permissions
-      # Required to encrypt replicated objects.
-      # ------------------------------------------------------------------
-      #
-      {
-        Sid    = "DestinationKMS"
-        Effect = "Allow"
-
-        Action = [
-          "kms:Encrypt",
-          "kms:DescribeKey",
-          "kms:GenerateDataKey",
-          "kms:GenerateDataKeyWithoutPlaintext",
-          "kms:ReEncryptTo"
-        ]
-
-        Resource = [
-          var.kms_key_arn
-        ]
-      },
-
-      #
-      # ------------------------------------------------------------------
-      # Write Replicated Objects
-      # ------------------------------------------------------------------
-      #
-      {
-        Sid    = "WriteReplicaObjects"
-        Effect = "Allow"
-
-        Action = [
-          "s3:ReplicateObject",
-          "s3:ReplicateDelete",
-          "s3:ReplicateTags",
-          "s3:ObjectOwnerOverrideToBucketOwner"
-        ]
-
-        Resource = [
-          "${aws_s3_bucket.logs_replica.arn}/*"
-        ]
-      }
+    actions = [
+      "s3:GetReplicationConfiguration",
+      "s3:ListBucket"
     ]
-  })
+
+    resources = [
+      for bucket in var.replication_buckets : bucket.bucket_arn
+    ]
+  }
+
+  statement {
+    sid    = "ReadSourceObjects"
+    effect = "Allow"
+
+    actions = [
+      "s3:GetObjectVersion",
+      "s3:GetObjectVersionAcl",
+      "s3:GetObjectVersionTagging",
+      "s3:GetObjectVersionForReplication",
+      "s3:GetObjectRetention",
+      "s3:GetObjectLegalHold"
+    ]
+
+    resources = [
+      for bucket in var.replication_buckets :
+      "${bucket.bucket_arn}/*"
+    ]
+  }
+
+  statement {
+    sid    = "SourceKMS"
+    effect = "Allow"
+
+    actions = [
+      "kms:Decrypt",
+      "kms:DescribeKey",
+      "kms:ReEncryptFrom"
+    ]
+
+    resources = distinct([
+      for bucket in var.replication_buckets : bucket.kms_key_arn
+    ])
+  }
+
+  statement {
+    sid    = "DestinationKMS"
+    effect = "Allow"
+
+    actions = [
+      "kms:Encrypt",
+      "kms:DescribeKey",
+      "kms:GenerateDataKey",
+      "kms:GenerateDataKeyWithoutPlaintext",
+      "kms:ReEncryptTo"
+    ]
+
+    resources = [
+      var.kms_key_arn
+    ]
+  }
+
+  statement {
+    sid    = "WriteReplicaObjects"
+    effect = "Allow"
+
+    actions = [
+      "s3:ReplicateObject",
+      "s3:ReplicateDelete",
+      "s3:ReplicateTags",
+      "s3:ObjectOwnerOverrideToBucketOwner"
+    ]
+
+    resources = [
+      for bucket in aws_s3_bucket.replica :
+      "${bucket.arn}/*"
+    ]
+  }
+}
+
+resource "aws_iam_policy" "replication" {
+  name   = "${var.project_name}-${var.environment}-s3-replication-policy"
+  policy = data.aws_iam_policy_document.replication.json
 
   tags = {
     Project     = var.project_name
@@ -150,8 +115,6 @@ resource "aws_iam_policy" "replication" {
 }
 
 resource "aws_iam_role_policy_attachment" "replication" {
-
-  role = aws_iam_role.replication.name
-
+  role       = aws_iam_role.replication.name
   policy_arn = aws_iam_policy.replication.arn
 }

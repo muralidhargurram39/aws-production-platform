@@ -1,7 +1,17 @@
-output "replica_bucket_name" {
-  value = aws_s3_bucket.logs_replica.bucket
+output "replica_bucket_names" {
+  description = "Names of the DR replica buckets"
+
+  value = {
+    for key, bucket in aws_s3_bucket.replica :
+    key => bucket.bucket
+  }
 }
 
-output "replica_bucket_arn" {
-  value = aws_s3_bucket.logs_replica.arn
+output "replica_bucket_arns" {
+  description = "ARNs of the DR replica buckets"
+
+  value = {
+    for key, bucket in aws_s3_bucket.replica :
+    key => bucket.arn
+  }
 }

@@ -2,7 +2,8 @@ resource "aws_ssm_parameter" "cloudwatch_agent" {
 
   name = local.parameter_name
 
-  type = "String"
+  type   = "SecureString"
+  key_id = var.kms_key_arn
 
   tags = merge(
     var.tags,

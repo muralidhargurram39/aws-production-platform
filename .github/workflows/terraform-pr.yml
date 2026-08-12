@@ -15,10 +15,6 @@ jobs:
     name: Validate Terraform
     runs-on: ubuntu-latest
 
-    defaults:
-      run:
-        working-directory: environments/dev
-
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v4
@@ -28,17 +24,20 @@ jobs:
         with:
           role-to-assume: ${{ vars.AWS_ROLE_ARN }}
           aws-region: ap-south-2
+          allowed-account-ids: 626311400372
 
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v3
 
-      - name: Terraform Init
-        run: terraform init
-
       - name: Terraform Format Check
         run: terraform fmt -check -recursive
 
+      - name: Terraform Init
+        working-directory: environments/dev
+        run: terraform init
+
       - name: Terraform Validate
+        working-directory: environments/dev
         run: terraform validate
 
       - name: Setup TFLint
@@ -53,15 +52,9 @@ jobs:
       - name: Run Checkov
         uses: bridgecrewio/checkov-action@v12
         with:
-          directory: environments/dev
+          directory: .
           framework: terraform
-          quiet: true
 
       - name: Terraform Plan
-        run: terraform plan -out=tfplan -no-color
-
-      - name: Upload Terraform Plan
-        uses: actions/upload-artifact@v4
-        with:
-          name: terraform-plan
-          path: environments/dev/tfplan
+        working-directory: environments/dev
+        run: terraform plan -no-color

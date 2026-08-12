@@ -23,3 +23,9 @@ variable "lock_table_name" {
 
   default = "aws-production-platform-terraform-lock"
 }
+
+variable "dr_region" {
+  description = "AWS Region used for the Terraform state DR replica"
+  type        = string
+  default     = "ap-south-1"
+}

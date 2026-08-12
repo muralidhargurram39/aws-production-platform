@@ -1,5 +1,7 @@
 data "aws_iam_policy_document" "kms" {
-
+  #checkov:skip=CKV_AWS_109:KMS key policy uses Resource "*" by design; the policy is attached directly to this KMS key
+  #checkov:skip=CKV_AWS_111:KMS key policy uses Resource "*" by design; the policy is attached directly to this KMS key
+  #checkov:skip=CKV_AWS_356:KMS key policy uses Resource "*" by design; the policy is attached directly to this KMS key
   statement {
 
     sid    = "EnableRootPermissions"

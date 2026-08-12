@@ -1,4 +1,5 @@
 resource "aws_s3_bucket" "terraform_state" {
+  #checkov:skip=CKV2_AWS_62:S3 event notifications are intentionally not configured because Terraform state has no event-driven consumer.
   bucket = var.state_bucket_name
 
   force_destroy = false
@@ -75,4 +76,11 @@ module "github_oidc" {
   environment             = "dev"
   backend_bucket_name     = var.state_bucket_name
   backend_lock_table_name = var.lock_table_name
+}
+
+resource "aws_s3_bucket_logging" "terraform_state" {
+  bucket = aws_s3_bucket.terraform_state.id
+
+  target_bucket = aws_s3_bucket.access_logs.id
+  target_prefix = "terraform-state/"
 }

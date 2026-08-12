@@ -164,18 +164,19 @@ module "logging" {
   environment  = var.environment
   aws_region   = var.aws_region
 
-  tags                     = local.common_tags
-  kms_key_arn              = module.kms.key_arn
-  enable_cloudtrail_policy = true
-  force_destroy            = true
+  tags          = local.common_tags
+  kms_key_arn   = module.kms.key_arn
+  force_destroy = true
 }
 
 module "config" {
   source = "../../modules/config"
 
-  project_name  = var.project_name
-  environment   = var.environment
-  force_destroy = true
+  project_name           = var.project_name
+  environment            = var.environment
+  force_destroy          = true
+  kms_key_arn            = module.kms.key_arn
+  access_log_bucket_name = module.logging.access_logs_bucket_name
 }
 
 module "access_analyzer" {
@@ -197,22 +198,44 @@ module "disaster_recovery" {
     aws    = aws
     aws.dr = aws.dr
   }
-  force_destroy = true
 
-  source_kms_key_arn = module.kms.key_arn
+  project_name = var.project_name
+  environment  = var.environment
+  account_id   = data.aws_caller_identity.current.account_id
+
+  force_destroy = true
 
   kms_key_arn = module.kms_dr.key_arn
 
-  project_name       = var.project_name
-  environment        = var.environment
-  account_id         = data.aws_caller_identity.current.account_id
-  source_bucket_name = module.logging.logs_bucket_name
-  source_bucket_arn  = module.logging.logs_bucket_arn
+  replication_buckets = {
+    logs = {
+      bucket_name = module.logging.logs_bucket_name
+      bucket_arn  = module.logging.logs_bucket_arn
+      kms_key_arn = module.kms.key_arn
+    }
+
+    config = {
+      bucket_name = module.config.config_bucket_name
+      bucket_arn  = module.config.config_bucket_arn
+      kms_key_arn = module.kms.key_arn
+    }
+
+    cloudfront_logs = {
+      bucket_name = module.logging.cloudfront_logs_bucket_name
+      bucket_arn  = module.logging.cloudfront_logs_bucket_arn
+      kms_key_arn = module.kms.key_arn
+    }
+  }
 }
 
 module "route53" {
 
   source = "../../modules/route53"
+  providers = {
+    aws        = aws
+    aws.global = aws.global
+  }
+
 
   project_name = var.project_name
   environment  = var.environment
@@ -303,8 +326,11 @@ module "cloudtrail" {
 
   trail_bucket_name = module.logging.bucket_name
   kms_key_arn       = module.kms.key_arn
+  sns_topic_arn     = module.monitoring.sns_topic_arn
+
   depends_on = [
-    module.logging
+    module.logging,
+    module.monitoring
   ]
 }
 
