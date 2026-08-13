@@ -31,6 +31,7 @@ data "aws_iam_policy_document" "storage" {
 
     actions = [
       "s3:DeleteBucket",
+      "s3:GetAccelerateConfiguration",
       "s3:GetBucketAcl",
       "s3:GetBucketCors",
       "s3:GetBucketLocation",
@@ -38,6 +39,7 @@ data "aws_iam_policy_document" "storage" {
       "s3:GetBucketWebsite",
       "s3:ListBucket",
       "s3:GetBucketPolicy",
+      "s3:GetBucketRequestPayment",
       "s3:PutBucketPolicy",
       "s3:GetBucketEncryption",
       "s3:PutEncryptionConfiguration",
