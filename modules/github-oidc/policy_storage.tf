@@ -26,36 +26,36 @@ data "aws_iam_policy_document" "storage" {
   # S3 bucket management
   #
   statement {
-  sid    = "S3BucketManagement"
-  effect = "Allow"
+    sid    = "S3BucketManagement"
+    effect = "Allow"
 
-  actions = [
-    "s3:GetBucketAcl",
-    "s3:GetBucketCORS",
-    "s3:GetBucketLocation",
-    "s3:GetBucketLogging",
-    "s3:GetBucketNotification",
-    "s3:GetBucketPolicy",
-    "s3:GetBucketPublicAccessBlock",
-    "s3:GetBucketRequestPayment",
-    "s3:GetBucketTagging",
-    "s3:GetBucketVersioning",
-    "s3:GetAccelerateConfiguration",
-    "s3:ListBucket",
-    "s3:PutBucketCORS",
-    "s3:PutBucketLogging",
-    "s3:PutBucketNotification",
-    "s3:PutBucketPolicy",
-    "s3:PutBucketPublicAccessBlock",
-    "s3:PutBucketTagging",
-    "s3:PutBucketVersioning",
-    "s3:DeleteBucket",
-  ]
+    actions = [
+      "s3:GetBucketAcl",
+      "s3:GetBucketCORS",
+      "s3:GetBucketLocation",
+      "s3:GetBucketLogging",
+      "s3:GetBucketNotification",
+      "s3:GetBucketPolicy",
+      "s3:GetBucketPublicAccessBlock",
+      "s3:GetBucketRequestPayment",
+      "s3:GetBucketTagging",
+      "s3:GetBucketVersioning",
+      "s3:GetAccelerateConfiguration",
+      "s3:ListBucket",
+      "s3:PutBucketCORS",
+      "s3:PutBucketLogging",
+      "s3:PutBucketNotification",
+      "s3:PutBucketPolicy",
+      "s3:PutBucketPublicAccessBlock",
+      "s3:PutBucketTagging",
+      "s3:PutBucketVersioning",
+      "s3:DeleteBucket",
+    ]
 
-  resources = [
-    "arn:aws:s3:::aws-production-platform-dev-*"
-  ]
-}
+    resources = [
+      "arn:aws:s3:::aws-production-platform-dev-*"
+    ]
+  }
 
   #
   # S3 object management
