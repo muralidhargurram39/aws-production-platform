@@ -20,6 +20,7 @@ data "aws_iam_policy_document" "governance" {
       "config:PutDeliveryChannel",
       "config:DeleteDeliveryChannel",
       "config:DescribeDeliveryChannels",
+      "config:DescribeConfigurationRecorderStatus",
       "config:StartConfigurationRecorder",
       "config:StopConfigurationRecorder",
       "config:PutConfigRule",

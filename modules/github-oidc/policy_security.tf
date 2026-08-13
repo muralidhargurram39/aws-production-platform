@@ -132,6 +132,9 @@ data "aws_iam_policy_document" "security" {
     actions = [
       "wafv2:DeleteWebACL",
       "wafv2:GetWebACL",
+      "wafv2:PutLoggingConfiguration",
+      "wafv2:GetLoggingConfiguration",
+      "wafv2:DeleteLoggingConfiguration",
       "wafv2:UpdateWebACL",
       "wafv2:TagResource",
       "wafv2:UntagResource"

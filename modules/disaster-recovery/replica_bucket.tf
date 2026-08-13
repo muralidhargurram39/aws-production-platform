@@ -7,7 +7,7 @@ resource "aws_s3_bucket" "replica" {
 
   provider = aws.dr
 
-  bucket = "${var.project_name}-${var.environment}-${var.account_id}-${each.key}-dr"
+  bucket = "${var.project_name}-${var.environment}-${var.account_id}-${replace(each.key, "_", "-")}-dr"
 
   force_destroy = var.force_destroy
 

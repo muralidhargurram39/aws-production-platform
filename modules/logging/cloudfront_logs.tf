@@ -39,6 +39,10 @@ resource "aws_s3_bucket_server_side_encryption_configuration" "cloudfront_logs" 
 
 resource "aws_s3_bucket_public_access_block" "cloudfront_logs" {
 
+  # CloudFront log delivery requires ACL support, so BucketOwnerPreferred
+  # is intentional instead of BucketOwnerEnforced.
+  #checkov:skip=CKV2_AWS_65:CloudFront logging requires S3 ACL support; BucketOwnerPreferred is intentional.
+
   bucket = aws_s3_bucket.cloudfront_logs.id
 
   block_public_acls       = true
@@ -49,10 +53,14 @@ resource "aws_s3_bucket_public_access_block" "cloudfront_logs" {
 
 resource "aws_s3_bucket_ownership_controls" "cloudfront_logs" {
 
+  # CloudFront log delivery requires ACL support, so BucketOwnerPreferred
+  # is intentional instead of BucketOwnerEnforced.
+  #checkov:skip=CKV2_AWS_65:CloudFront logging requires S3 ACL support; BucketOwnerPreferred is intentional.
+
   bucket = aws_s3_bucket.cloudfront_logs.id
 
   rule {
-    object_ownership = "BucketOwnerEnforced"
+    object_ownership = "BucketOwnerPreferred"
   }
 }
 

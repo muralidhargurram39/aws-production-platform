@@ -118,6 +118,7 @@ data "aws_iam_policy_document" "networking" {
 
     actions = [
       "iam:PutRolePolicy",
+      "iam:GetRolePolicy",
       "iam:PassRole"
     ]
 
@@ -137,6 +138,7 @@ data "aws_iam_policy_document" "networking" {
 
       # VPC
       "ec2:DeleteVpc",
+      "ec2:DescribeFlowLogs",
       "ec2:ModifyVpcAttribute",
 
       # Subnet
