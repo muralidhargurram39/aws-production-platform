@@ -34,7 +34,7 @@ data "aws_iam_policy_document" "storage" {
       "s3:GetAccelerateConfiguration",
       "s3:GetBucketAcl",
       "s3:GetBucketCors",
-      "s3:GetBucketEncryption",
+      "s3:GetEncryptionConfiguration",
       "s3:GetBucketLocation",
       "s3:GetBucketLogging",
       "s3:GetBucketNotification",
