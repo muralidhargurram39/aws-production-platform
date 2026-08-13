@@ -1,15 +1,33 @@
 data "aws_iam_policy_document" "security" {
 
   #
-  # KMS account-level operations
+  # KMS account-level read operations
+  #
+  # ListAliases is an account-level read operation and does not support
+  # the aws:RequestTag/Project condition used by CreateKey.
   #
   statement {
-    sid    = "KMSAccountOperations"
+    sid    = "KMSAccountRead"
     effect = "Allow"
 
     actions = [
-      "kms:CreateKey",
       "kms:ListAliases"
+    ]
+
+    resources = ["*"]
+  }
+
+  #
+  # KMS key creation
+  #
+  # Restrict creation to keys requested with the project tag.
+  #
+  statement {
+    sid    = "KMSKeyCreation"
+    effect = "Allow"
+
+    actions = [
+      "kms:CreateKey"
     ]
 
     resources = ["*"]
