@@ -35,6 +35,7 @@ data "aws_iam_policy_document" "storage" {
       "s3:GetBucketCors",
       "s3:GetBucketLocation",
       "s3:GetBucketVersioning",
+      "s3:GetBucketWebsite",
       "s3:ListBucket",
       "s3:GetBucketPolicy",
       "s3:PutBucketPolicy",
