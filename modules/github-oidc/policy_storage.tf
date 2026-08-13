@@ -46,6 +46,7 @@ data "aws_iam_policy_document" "storage" {
       "s3:GetBucketVersioning",
       "s3:GetBucketWebsite",
       "s3:GetLifecycleConfiguration",
+      "s3:GetReplicationConfiguration",
       "s3:ListBucket",
       "s3:PutBucketCORS",
       "s3:PutBucketEncryption",
