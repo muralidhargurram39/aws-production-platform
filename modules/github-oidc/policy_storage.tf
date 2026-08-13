@@ -30,30 +30,37 @@ data "aws_iam_policy_document" "storage" {
     effect = "Allow"
 
     actions = [
+      "s3:DeleteBucket",
+      "s3:GetAccelerateConfiguration",
       "s3:GetBucketAcl",
-      "s3:GetBucketCORS",
+      "s3:GetBucketCors",
+      "s3:GetBucketEncryption",
       "s3:GetBucketLocation",
       "s3:GetBucketLogging",
       "s3:GetBucketNotification",
+      "s3:GetBucketOwnershipControls",
       "s3:GetBucketPolicy",
       "s3:GetBucketPublicAccessBlock",
       "s3:GetBucketRequestPayment",
       "s3:GetBucketTagging",
       "s3:GetBucketVersioning",
-      "s3:GetAccelerateConfiguration",
+      "s3:GetBucketWebsite",
+      "s3:GetLifecycleConfiguration",
       "s3:ListBucket",
       "s3:PutBucketCORS",
+      "s3:PutBucketEncryption",
       "s3:PutBucketLogging",
       "s3:PutBucketNotification",
+      "s3:PutBucketOwnershipControls",
       "s3:PutBucketPolicy",
       "s3:PutBucketPublicAccessBlock",
       "s3:PutBucketTagging",
       "s3:PutBucketVersioning",
-      "s3:DeleteBucket",
+      "s3:PutLifecycleConfiguration"
     ]
 
     resources = [
-      "arn:aws:s3:::aws-production-platform-dev-*"
+      "arn:aws:s3:::${var.project_name}-${var.environment}-${data.aws_caller_identity.current.account_id}-*"
     ]
   }
 
