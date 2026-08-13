@@ -31,6 +31,7 @@ data "aws_iam_policy_document" "storage" {
 
     actions = [
       "s3:DeleteBucket",
+      "s3:GetBucketAcl",
       "s3:GetBucketLocation",
       "s3:GetBucketVersioning",
       "s3:ListBucket",

@@ -54,4 +54,22 @@ data "aws_iam_policy_document" "monitoring" {
 
     resources = ["*"]
   }
+
+  #
+  # CloudWatch Agent configuration stored in SSM Parameter Store.
+  #
+  statement {
+    sid    = "CloudWatchAgentParameter"
+    effect = "Allow"
+
+    actions = [
+      "ssm:GetParameter",
+      "ssm:PutParameter",
+      "ssm:DeleteParameter"
+    ]
+
+    resources = [
+      "arn:aws:ssm:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:parameter/${local.name_prefix}/*"
+    ]
+  }
 }

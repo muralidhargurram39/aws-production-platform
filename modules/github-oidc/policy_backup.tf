@@ -74,15 +74,13 @@ data "aws_iam_policy_document" "backup" {
   #
   # KMS access used by AWS Backup.
   #
-  # The Dev GitHub Actions role must be able to authorize use of the
-  # customer-managed KMS key associated with the Backup vault.
-  #
   statement {
     sid    = "BackupKMS"
     effect = "Allow"
 
     actions = [
       "kms:CreateGrant",
+      "kms:RetireGrant",
       "kms:DescribeKey",
       "kms:GenerateDataKey",
       "kms:Encrypt",

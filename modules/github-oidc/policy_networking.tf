@@ -64,6 +64,7 @@ data "aws_iam_policy_document" "networking" {
 
       # VPC
       "ec2:CreateVpc",
+      "ec2:CreateFlowLogs",
 
       # Subnet
       "ec2:CreateSubnet",
@@ -102,6 +103,27 @@ data "aws_iam_policy_document" "networking" {
     ]
 
     resources = ["*"]
+  }
+
+  #
+  # IAM permissions required to configure VPC Flow Logs.
+  #
+  # Terraform creates the flow-log delivery role and then attaches
+  # its inline CloudWatch Logs policy. The GitHub Actions role therefore
+  # needs PutRolePolicy on that specific role.
+  #
+  statement {
+    sid    = "VPCFlowLogsIAM"
+    effect = "Allow"
+
+    actions = [
+      "iam:PutRolePolicy",
+      "iam:PassRole"
+    ]
+
+    resources = [
+      "arn:aws:iam::${data.aws_caller_identity.current.account_id}:role/${var.project_name}-${var.environment}-vpc-flow-logs-role"
+    ]
   }
 
   #

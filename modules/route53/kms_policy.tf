@@ -41,7 +41,8 @@ data "aws_iam_policy_document" "route53_logs_kms" {
       "kms:Decrypt",
       "kms:Encrypt",
       "kms:GenerateDataKey",
-      "kms:ReEncrypt*"
+      "kms:ReEncrypt*",
+      "kms:DescribeKey"
     ]
 
     resources = ["*"]
