@@ -159,7 +159,8 @@ data "aws_iam_policy_document" "security" {
     effect = "Allow"
 
     actions = [
-      "wafv2:ListWebACLs"
+      "wafv2:ListWebACLs",
+      "wafv2:ListTagsForResource"
     ]
 
     resources = ["*"]
