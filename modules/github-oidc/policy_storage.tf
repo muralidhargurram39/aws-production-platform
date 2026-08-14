@@ -25,18 +25,24 @@ data "aws_iam_policy_document" "storage" {
   #
   # S3 bucket management
   #
+
   statement {
     sid    = "S3BucketManagement"
     effect = "Allow"
 
     actions = [
+      # Bucket lifecycle
+      "s3:CreateBucket",
       "s3:DeleteBucket",
+
+      # Bucket read operations Terraform performs
       "s3:GetAccelerateConfiguration",
       "s3:GetBucketAcl",
       "s3:GetBucketCors",
       "s3:GetBucketLocation",
       "s3:GetBucketLogging",
       "s3:GetBucketNotification",
+      "s3:GetBucketObjectLockConfiguration",
       "s3:GetBucketOwnershipControls",
       "s3:GetBucketPolicy",
       "s3:GetBucketPublicAccessBlock",
@@ -48,16 +54,44 @@ data "aws_iam_policy_document" "storage" {
       "s3:GetLifecycleConfiguration",
       "s3:GetReplicationConfiguration",
       "s3:ListBucket",
+
+      # ACL
+      "s3:PutBucketAcl",
+
+      # CORS
       "s3:PutBucketCors",
-      "s3:PutBucketLogging",
-      "s3:PutBucketNotification",
-      "s3:PutBucketOwnershipControls",
-      "s3:PutBucketPolicy",
-      "s3:PutBucketPublicAccessBlock",
-      "s3:PutBucketTagging",
-      "s3:PutBucketVersioning",
+
+      # Encryption
       "s3:PutEncryptionConfiguration",
-      "s3:PutLifecycleConfiguration"
+
+      # Lifecycle
+      "s3:PutLifecycleConfiguration",
+
+      # Logging
+      "s3:PutBucketLogging",
+
+      # Notifications
+      "s3:PutBucketNotification",
+
+      # Object ownership
+      "s3:PutBucketOwnershipControls",
+
+      # Bucket policy
+      "s3:PutBucketPolicy",
+      "s3:DeleteBucketPolicy",
+
+      # Public access block
+      "s3:PutBucketPublicAccessBlock",
+
+      # Tags
+      "s3:PutBucketTagging",
+
+      # Versioning
+      "s3:PutBucketVersioning",
+
+      # Replication
+      "s3:PutReplicationConfiguration",
+      "s3:DeleteReplicationConfiguration"
     ]
 
     resources = [
