@@ -53,6 +53,7 @@ data "aws_iam_policy_document" "security" {
 
     actions = [
       "kms:DescribeKey",
+      "kms:CreateAlias",
       "kms:EnableKeyRotation",
       "kms:DisableKeyRotation",
       "kms:ScheduleKeyDeletion",

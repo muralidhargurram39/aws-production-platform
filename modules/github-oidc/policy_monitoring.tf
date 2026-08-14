@@ -95,4 +95,14 @@ data "aws_iam_policy_document" "monitoring" {
     ]
 
   }
+  statement {
+    sid    = "CloudWatchAgentAssociation"
+    effect = "Allow"
+
+    actions = [
+      "ssm:CreateAssociation"
+    ]
+
+    resources = ["*"]
+  }
 }
