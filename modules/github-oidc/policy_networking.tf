@@ -97,6 +97,7 @@ data "aws_iam_policy_document" "networking" {
       "elasticloadbalancing:CreateLoadBalancer",
       "elasticloadbalancing:CreateListener",
       "elasticloadbalancing:CreateTargetGroup",
+      "elasticloadbalancing:AddTags",
 
       # Auto Scaling
       "autoscaling:CreateAutoScalingGroup"

@@ -69,7 +69,8 @@ data "aws_iam_policy_document" "monitoring" {
     ]
 
     resources = [
-      "arn:aws:ssm:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:parameter/${local.name_prefix}/*"
+      "arn:aws:ssm:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:parameter/platform/${var.project_name}/${var.environment}/*"
     ]
+
   }
 }

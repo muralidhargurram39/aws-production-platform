@@ -71,6 +71,17 @@ data "aws_iam_policy_document" "backup" {
     resources = ["*"]
   }
 
+  statement {
+    sid    = "BackupStorageMountCapsule"
+    effect = "Allow"
+
+    actions = [
+      "backup-storage:MountCapsule"
+    ]
+
+    resources = ["*"]
+  }
+
   #
   # KMS access used by AWS Backup.
   #
@@ -79,14 +90,14 @@ data "aws_iam_policy_document" "backup" {
     effect = "Allow"
 
     actions = [
-      "kms:CreateGrant",
       "kms:RetireGrant",
-      "kms:DescribeKey",
+      "kms:ReEncryptTo",
+      "kms:ReEncryptFrom",
       "kms:GenerateDataKey",
       "kms:Encrypt",
+      "kms:DescribeKey",
       "kms:Decrypt",
-      "kms:ReEncryptFrom",
-      "kms:ReEncryptTo"
+      "kms:CreateGrant"
     ]
 
     resources = [

@@ -53,4 +53,19 @@ data "aws_iam_policy_document" "governance" {
 
     resources = ["*"]
   }
+
+  statement {
+    sid    = "IAMPolicyTagging"
+    effect = "Allow"
+
+    actions = [
+      "iam:TagPolicy",
+      "iam:UntagPolicy"
+    ]
+
+    resources = [
+      "arn:aws:iam::${data.aws_caller_identity.current.account_id}:policy/${var.project_name}-${var.environment}-*"
+    ]
+  }
+
 }

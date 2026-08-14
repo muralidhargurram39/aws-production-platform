@@ -35,6 +35,7 @@ data "aws_iam_policy_document" "backup_kms" {
     }
 
     actions = [
+      "kms:CreateGrant",
       "kms:Decrypt",
       "kms:DescribeKey",
       "kms:Encrypt",
