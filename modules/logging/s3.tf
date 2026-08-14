@@ -2,7 +2,7 @@ resource "aws_s3_bucket" "logs" {
 
   #checkov:skip=CKV_AWS_144:Cross-region replication is configured by the disaster-recovery module, which uses this bucket as its replication source and replicates it to the DR logs replica.
   #checkov:skip=CKV2_AWS_62:S3 event notifications are intentionally not configured because this bucket has no event-driven consumer.
-
+  #checkov:skip=CKV_AWS_145:ALB log-delivery bucket intentionally uses SSE-S3 because SSE-KMS is incompatible with the configured ALB log-delivery path.
   bucket = "${local.name_prefix}-${data.aws_caller_identity.current.account_id}-logs"
 
   force_destroy = var.force_destroy
