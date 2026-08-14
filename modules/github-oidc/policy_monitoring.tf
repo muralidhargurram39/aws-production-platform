@@ -86,7 +86,8 @@ data "aws_iam_policy_document" "monitoring" {
       "ssm:PutParameter",
       "ssm:DeleteParameter",
       "ssm:AddTagsToResource",
-      "ssm:RemoveTagsFromResource"
+      "ssm:RemoveTagsFromResource",
+      "ssm:ListTagsForResource"
     ]
 
     resources = [
