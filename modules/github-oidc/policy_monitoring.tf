@@ -60,6 +60,21 @@ data "aws_iam_policy_document" "monitoring" {
   }
 
   #
+  # SSM DescribeParameters is an account-level read operation and
+  # requires Resource="*".
+  #
+  statement {
+    sid    = "CloudWatchAgentParameterRead"
+    effect = "Allow"
+
+    actions = [
+      "ssm:DescribeParameters"
+    ]
+
+    resources = ["*"]
+  }
+
+  #
   # CloudWatch Agent configuration stored in SSM Parameter Store.
   #
   statement {

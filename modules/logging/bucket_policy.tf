@@ -3,7 +3,6 @@ data "aws_caller_identity" "current" {}
 data "aws_iam_policy_document" "logs_bucket" {
 
   statement {
-
     sid    = "AllowALBGetBucketAcl"
     effect = "Allow"
 
@@ -25,16 +24,12 @@ data "aws_iam_policy_document" "logs_bucket" {
   }
 
   statement {
-
     sid    = "AllowALBAccessLogs"
     effect = "Allow"
 
     principals {
-      type = "Service"
-
-      identifiers = [
-        "logdelivery.elasticloadbalancing.amazonaws.com"
-      ]
+      type        = "Service"
+      identifiers = ["logdelivery.elasticloadbalancing.amazonaws.com"]
     }
 
     actions = [
@@ -45,7 +40,6 @@ data "aws_iam_policy_document" "logs_bucket" {
       "${aws_s3_bucket.logs.arn}/alb/AWSLogs/${data.aws_caller_identity.current.account_id}/*"
     ]
   }
-
   #
   # Allow CloudTrail to verify bucket ownership
   #

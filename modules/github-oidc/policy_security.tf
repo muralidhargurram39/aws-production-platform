@@ -95,7 +95,7 @@ data "aws_iam_policy_document" "security" {
     ]
 
     resources = [
-      "arn:aws:kms:*:${data.aws_caller_identity.current.account_id}:alias/${local.name_prefix}-*"
+      "arn:aws:kms:*:${data.aws_caller_identity.current.account_id}:alias/${local.name_prefix}"
     ]
   }
 
