@@ -82,7 +82,7 @@ data "aws_iam_policy_document" "security" {
   #
   # KMS alias management
   #
-  # CreateAlias requires permission on both the alias and target key.
+  # KMS alias operations are authorized against alias resources.
   #
   statement {
     sid    = "KMSAliasManagement"
@@ -90,12 +90,12 @@ data "aws_iam_policy_document" "security" {
 
     actions = [
       "kms:CreateAlias",
-      "kms:DeleteAlias"
+      "kms:DeleteAlias",
+      "kms:UpdateAlias"
     ]
 
     resources = [
-      "arn:aws:kms:*:${data.aws_caller_identity.current.account_id}:alias/${local.name_prefix}-*",
-      "arn:aws:kms:*:${data.aws_caller_identity.current.account_id}:key/*"
+      "arn:aws:kms:*:${data.aws_caller_identity.current.account_id}:alias/${local.name_prefix}-*"
     ]
   }
 

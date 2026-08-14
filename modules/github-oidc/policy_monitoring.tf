@@ -28,6 +28,8 @@ data "aws_iam_policy_document" "monitoring" {
 
       "logs:CreateLogGroup",
       "logs:DeleteLogGroup",
+      "logs:CreateLogDelivery",
+      "logs:DeleteLogDelivery",
       "logs:DeleteMetricFilter",
       "logs:DescribeLogGroups",
       "logs:DescribeMetricFilters",
@@ -36,6 +38,8 @@ data "aws_iam_policy_document" "monitoring" {
       "logs:PutResourcePolicy",
       "logs:DeleteResourcePolicy",
       "logs:DescribeResourcePolicies",
+      "logs:AssociateKmsKey",
+      "logs:DisassociateKmsKey",
 
       "logs:TagResource",
       "logs:UntagResource",
@@ -65,7 +69,9 @@ data "aws_iam_policy_document" "monitoring" {
     actions = [
       "ssm:GetParameter",
       "ssm:PutParameter",
-      "ssm:DeleteParameter"
+      "ssm:DeleteParameter",
+      "ssm:AddTagsToResource",
+      "ssm:RemoveTagsFromResource"
     ]
 
     resources = [
