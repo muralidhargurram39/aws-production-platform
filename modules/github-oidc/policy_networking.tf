@@ -39,9 +39,11 @@ data "aws_iam_policy_document" "networking" {
 
       # Elastic Load Balancing
       "elasticloadbalancing:DescribeLoadBalancers",
+      "elasticloadbalancing:DescribeLoadBalancerAttributes",
       "elasticloadbalancing:DescribeListeners",
       "elasticloadbalancing:DescribeTargetGroups",
       "elasticloadbalancing:DescribeTargetHealth",
+      "elasticloadbalancing:DescribeTags",
 
       # Auto Scaling
       "autoscaling:DescribeAutoScalingGroups",
